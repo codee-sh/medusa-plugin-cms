@@ -2,7 +2,7 @@ name: Release
 
 # Versions and publishes the package from develop, as SDLC.md "Release" describes.
 # While develop has changesets, the `version` job keeps one "chore: release" PR open; its merge leaves
-# no changesets, and the `pack` and `publish` jobs publish to npm, tag v<version> and create the GitHub
+# no changesets, and the `publish` job publishes to npm, tags v<version> and creates the GitHub
 # release. npm's trusted publisher names this file: renaming it breaks publication.
 
 on:
@@ -20,7 +20,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       mode: ${{ steps.select-mode.outputs.mode }}
-      publish-plan-artifact-id: ${{ steps.select-mode.outputs.publish-plan-artifact-id }}
     permissions:
       contents: read
     steps:
@@ -79,14 +78,17 @@ jobs:
           # @changesets/changelog-github reads it to link each entry's PR, commit and author.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  pack:
+  # Builds and publishes in one job: Changesets publishes a Yarn project with `yarn npm publish`, which
+  # cannot publish a packed tarball, so the build cannot be split into a job without `id-token`. Yarn
+  # exchanges the job's OIDC token with npm (trusted publishing) and signs provenance
+  # (`publishConfig.provenance`).
+  publish:
     if: needs.select-mode.outputs.mode == 'publish'
     needs: select-mode
     runs-on: ubuntu-latest
-    outputs:
-      pack-dir-artifact-id: ${{ steps.pack.outputs.pack-dir-artifact-id }}
     permissions:
-      contents: read
+      contents: write
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -108,40 +110,5 @@ jobs:
       - name: Build
         run: yarn build
 
-      - name: Pack
-        id: pack
-        uses: changesets/action/pack@v2
-        with:
-          publish-plan-artifact-id: ${{ needs.select-mode.outputs.publish-plan-artifact-id }}
-
-  publish:
-    needs: pack
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      id-token: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version: 24
-          package-manager-cache: false
-
-      - name: Use npm 11.5.1 or later, which trusted publishing needs
-        run: npm install -g npm@^11.5.1
-
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Install dependencies
-        run: yarn install --immutable
-
       - name: Publish, tag and create the GitHub release
         uses: changesets/action/publish@v2
-        with:
-          pack-dir-artifact-id: ${{ needs.pack.outputs.pack-dir-artifact-id }}
