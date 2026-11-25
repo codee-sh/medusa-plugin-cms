@@ -1,0 +1,85 @@
+{
+  "optional": "(Opcjonalny)",
+  "requiredToPublish": "(Wymagany do publikacji)",
+  "media": {
+    "columns": {
+      "preview": "Podgląd",
+      "name": "Nazwa",
+      "type": "Typ"
+    },
+    "noResults": {
+      "title": "Brak pasujących plików",
+      "description": "Zmień wyszukiwanie, aby zobaczyć więcej plików"
+    },
+    "modal": {
+      "title": "Wybierz plik",
+      "description": "Wybierz plik z biblioteki mediów",
+      "searchPlaceholder": "Szukaj po nazwie pliku",
+      "confirm": "Użyj pliku",
+      "emptyTitle": "Brak plików",
+      "emptyDescription": "Prześlij plik, aby dodać go do biblioteki",
+      "loadFailed": "Nie udało się wczytać plików"
+    },
+    "picker": {
+      "dropzoneLabel": "Prześlij plik",
+      "addFile": "Dodaj plik",
+      "dropzoneHint": "Przeciągnij plik tutaj lub kliknij, aby wybrać. {{formats}}, do {{max}}.",
+      "chooseFromLibrary": "Wybierz z biblioteki",
+      "replace": "Prześlij inny plik",
+      "remove": "Usuń",
+      "moveUp": "Przenieś wyżej",
+      "moveDown": "Przenieś niżej",
+      "full_one": "To pole mieści najwyżej {{count}} plik. Usuń go, aby dodać inny.",
+      "full_few": "To pole mieści najwyżej {{count}} pliki. Usuń jeden, aby dodać inny.",
+      "full_many": "To pole mieści najwyżej {{count}} plików. Usuń jeden, aby dodać inny.",
+      "full_other": "To pole mieści najwyżej {{count}} pliku. Usuń jeden, aby dodać inny.",
+      "wrongType": "Ten typ pliku nie jest akceptowany. Użyj: {{formats}}.",
+      "tooLarge": "Wybierz plik mniejszy niż {{max}}",
+      "uploadFailed": "Nie udało się przesłać pliku. Spróbuj ponownie."
+    }
+  },
+  "layout": {
+    "errorCount_one": "{{count}} błąd",
+    "errorCount_few": "{{count}} błędy",
+    "errorCount_many": "{{count}} błędów",
+    "errorCount_other": "{{count}} błędu"
+  },
+  "combobox": {
+    "unavailable": "Opcje niedostępne: nie zarejestrowano źródła o nazwie „{{name}}”",
+    "loadFailed": "Nie udało się wczytać opcji",
+    "unknownValue": "Nieznana wartość: {{value}}"
+  },
+  "custom": {
+    "loading": "Wczytywanie",
+    "unavailable": "Niedostępne: nie zarejestrowano komponentu o nazwie „{{name}}”",
+    "failed": "Nie udało się wyświetlić tej części formularza"
+  },
+  "blocks": {
+    "add": "Dodaj blok",
+    "moveUp": "Przenieś wyżej",
+    "moveDown": "Przenieś niżej",
+    "showFields": "Pokaż pola",
+    "hideFields": "Ukryj pola",
+    "empty": "Brak bloków",
+    "notAllowed": "Ten typ bloku nie jest już tu dozwolony. Możesz go tylko usunąć."
+  },
+  "richText": {
+    "loading": "Wczytywanie edytora…",
+    "bold": "Pogrubienie",
+    "italic": "Kursywa",
+    "undo": "Cofnij",
+    "redo": "Ponów",
+    "blockType": "Typ bloku",
+    "paragraph": "Akapit",
+    "heading": "Nagłówek {{level}}",
+    "quote": "Cytat",
+    "bulletList": "Lista punktowana",
+    "numberedList": "Lista numerowana",
+    "link": "Link",
+    "linkUrl": "URL",
+    "linkNewTab": "Otwórz w nowej karcie",
+    "linkApply": "Zastosuj",
+    "linkRemove": "Usuń link",
+    "linkNotAllowed": "To pole nie przyjmuje linków. Usuń ten link."
+  }
+}

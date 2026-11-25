@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "node_modules",
+    ".medusa/server",
+    ".medusa/admin",
+    "src/admin",
+    ".cache",
+    "eslint.config.*",
+    "index.d.ts"
+  ]
+}

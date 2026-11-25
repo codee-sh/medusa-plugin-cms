@@ -1,0 +1,81 @@
+{
+  "optional": "(Optional)",
+  "requiredToPublish": "(Required to publish)",
+  "media": {
+    "columns": {
+      "preview": "Preview",
+      "name": "Name",
+      "type": "Type"
+    },
+    "noResults": {
+      "title": "No matching files",
+      "description": "Change the search to see more files"
+    },
+    "modal": {
+      "title": "Choose a file",
+      "description": "Pick a file from the media library",
+      "searchPlaceholder": "Search by file name",
+      "confirm": "Use file",
+      "emptyTitle": "No files yet",
+      "emptyDescription": "Upload a file to add it to the library",
+      "loadFailed": "Could not load the files"
+    },
+    "picker": {
+      "dropzoneLabel": "Upload a file",
+      "addFile": "Add a file",
+      "dropzoneHint": "Drag a file here or click to browse. {{formats}}, up to {{max}}.",
+      "chooseFromLibrary": "Choose from library",
+      "replace": "Upload a different file",
+      "remove": "Remove",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "full_one": "This field holds at most {{count}} file. Remove it to add another.",
+      "full_other": "This field holds at most {{count}} files. Remove one to add another.",
+      "wrongType": "This file type is not accepted. Use {{formats}}.",
+      "tooLarge": "Select a file smaller than {{max}}",
+      "uploadFailed": "Could not upload the file. Try again."
+    }
+  },
+  "layout": {
+    "errorCount_one": "{{count}} error",
+    "errorCount_other": "{{count}} errors"
+  },
+  "combobox": {
+    "unavailable": "Options unavailable: no source named \"{{name}}\" is registered",
+    "loadFailed": "Could not load the options",
+    "unknownValue": "Unknown value: {{value}}"
+  },
+  "custom": {
+    "loading": "Loading",
+    "unavailable": "Unavailable: no component named \"{{name}}\" is registered",
+    "failed": "Could not show this part of the form"
+  },
+  "blocks": {
+    "add": "Add block",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "showFields": "Show fields",
+    "hideFields": "Hide fields",
+    "empty": "No blocks yet",
+    "notAllowed": "This block type is no longer allowed here. You can only remove it."
+  },
+  "richText": {
+    "loading": "Loading editor…",
+    "bold": "Bold",
+    "italic": "Italic",
+    "undo": "Undo",
+    "redo": "Redo",
+    "blockType": "Block type",
+    "paragraph": "Paragraph",
+    "heading": "Heading {{level}}",
+    "quote": "Quote",
+    "bulletList": "Bulleted list",
+    "numberedList": "Numbered list",
+    "link": "Link",
+    "linkUrl": "URL",
+    "linkNewTab": "Open in a new tab",
+    "linkApply": "Apply",
+    "linkRemove": "Remove link",
+    "linkNotAllowed": "This field takes no links. Remove this one."
+  }
+}
