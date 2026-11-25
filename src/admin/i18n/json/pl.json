@@ -1,0 +1,115 @@
+{
+  "label": "Treści",
+  "routes": {
+    "children": "Podstrony"
+  },
+  "collections": {
+    "fields": {
+      "name": "Nazwa",
+      "description": "Opis",
+      "documents": "Dokumenty"
+    }
+  },
+  "documents": {
+    "status": {
+      "draft": "Szkic",
+      "published": "Opublikowany",
+      "publishedWithChanges": "Opublikowany ze zmianami"
+    },
+    "values": {
+      "yes": "Tak",
+      "no": "Nie",
+      "missingRelation": "{{id}} (nie znaleziono)"
+    },
+    "sorting": {
+      "oldestFirst": "Od najstarszych",
+      "newestFirst": "Od najnowszych"
+    },
+    "empty": {
+      "heading": "Brak dokumentów"
+    },
+    "create": {
+      "title": "{{label}}: nowy dokument",
+      "description": "Nowe dokumenty zapisują się jako szkice",
+      "success": "{{label}}: dokument utworzony",
+      "failed": "Nie udało się utworzyć dokumentu"
+    },
+    "form": {
+      "taken": "Używane już przez inny dokument",
+      "useSuggestion": "Użyj {{value}}",
+      "slugLocked": "Pole „{{label}}” jest zablokowane. Zmiana tego pola zmieni adres URL dokumentu.",
+      "unlock": "Odblokuj"
+    },
+    "edit": {
+      "title": "{{label}}: edycja dokumentu",
+      "success": "Zmiany zapisano",
+      "failed": "Nie udało się zapisać dokumentu",
+      "liveNote": "Zmiany będą widoczne po publikacji",
+      "liveOnSaveNote": "Zmiany będą widoczne od razu po zapisaniu",
+      "saveDraft": "Zapisz szkic",
+      "reload": "Wczytaj ponownie"
+    },
+    "details": {
+      "title": "Szczegóły",
+      "created": "Utworzono",
+      "updated": "Zaktualizowano",
+      "dateBy": "{{date}}, autor: {{name}}",
+      "published": "Opublikowano"
+    },
+    "publishing": {
+      "title": "Status",
+      "publish": "Opublikuj",
+      "unpublish": "Cofnij publikację",
+      "saveFirst": "Najpierw zapisz zmiany",
+      "publishesSaved": "Opublikowana zostanie ostatnia zapisana wersja",
+      "live": "Widoczny w sklepie",
+      "saveToPublish": "Zapisz zmiany, aby je opublikować",
+      "saveDraftToPublish": "Zapisz szkic, aby opublikować zmiany",
+      "publishTitle": "Opublikować ten dokument?",
+      "publishDescription": "Dokument stanie się widoczny w sklepie",
+      "unpublishTitle": "Cofnąć publikację tego dokumentu?",
+      "unpublishDescription": "Dokument zniknie ze sklepu i stanie się szkicem",
+      "published": "Dokument opublikowany",
+      "unpublished": "Publikacja dokumentu cofnięta",
+      "publishFailed": "Nie udało się opublikować dokumentu",
+      "unpublishFailed": "Nie udało się cofnąć publikacji dokumentu",
+      "publishChanges": "Opublikuj zmiany"
+    },
+    "delete": {
+      "title": "Usunąć ten dokument?",
+      "description": "Tej operacji nie można cofnąć",
+      "publishedDescription": "Dokument zniknie ze sklepu. Tej operacji nie można cofnąć.",
+      "success": "Dokument usunięty",
+      "failed": "Nie udało się usunąć dokumentu"
+    },
+    "history": {
+      "title": "Historia",
+      "empty": "Brak wersji. Historia zacznie się od następnego zapisu.",
+      "current": "Bieżąca",
+      "label": "Wersja {{version}}: {{change}}",
+      "save": "Zapisano",
+      "publish": "Opublikowano",
+      "unpublish": "Cofnięto publikację",
+      "restore": "Przywróć tę wersję",
+      "restored": "Przywrócono z wersji {{version}}",
+      "showMore": "Pokaż więcej",
+      "viewing": "Wersja {{version}}",
+      "back": "Wróć do najnowszej",
+      "latestHint": "To wersja, którą edytujesz",
+      "restoreTitle": "Przywrócić wersję {{version}}?",
+      "restoreDescription": "Jej treść stanie się nowym szkicem. Nic nie trafi do sklepu przed publikacją.",
+      "restoreSuccess": "Wersja {{version}} przywrócona jako szkic",
+      "restoreFailed": "Nie udało się przywrócić wersji"
+    },
+    "discard": {
+      "action": "Odrzuć zmiany",
+      "title": "Odrzucić nieopublikowane zmiany?",
+      "description": "Dokument wróci do opublikowanej treści. Odrzucony szkic zostanie w historii.",
+      "success": "Zmiany odrzucone",
+      "failed": "Nie udało się odrzucić zmian"
+    },
+    "columns": {
+      "publishedVersion": "Opublikowana wersja"
+    }
+  }
+}

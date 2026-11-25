@@ -1,0 +1,132 @@
+{
+  "name": "@codee-sh/medusa-plugin-cms",
+  "version": "0.0.1",
+  "description": "CMS for Medusa v2: model content as Medusa data models, edit it in Medusa Admin with drafts, versions and blocks, and serve it through the store API.",
+  "author": "Codee",
+  "license": "MIT",
+  "files": [
+    ".medusa/server",
+    "index.d.ts"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./.medusa/server/src/lib/index.js"
+    },
+    "./package.json": "./package.json",
+    "./workflows": "./.medusa/server/src/workflows/index.js",
+    "./admin-extensions": "./.medusa/server/src/admin-extensions/index.js",
+    "./shared": "./.medusa/server/src/shared/index.js",
+    "./.medusa/server/src/modules/*": "./.medusa/server/src/modules/*/index.js",
+    "./modules/*": "./.medusa/server/src/modules/*/index.js",
+    "./providers/*": "./.medusa/server/src/providers/*/index.js",
+    "./*": "./.medusa/server/src/*.js",
+    "./admin": {
+      "import": "./.medusa/server/src/admin/index.mjs",
+      "require": "./.medusa/server/src/admin/index.js",
+      "default": "./.medusa/server/src/admin/index.js"
+    }
+  },
+  "keywords": [
+    "medusa",
+    "medusajs",
+    "medusa-v2",
+    "medusa-plugin",
+    "medusa-plugin-integration",
+    "medusa-plugin-cms",
+    "cms",
+    "headless-cms",
+    "content-management",
+    "ecommerce"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codee-sh/medusa-plugin-cms.git"
+  },
+  "homepage": "https://github.com/codee-sh/medusa-plugin-cms#readme",
+  "bugs": {
+    "url": "https://github.com/codee-sh/medusa-plugin-cms/issues"
+  },
+  "scripts": {
+    "build": "medusa plugin:build",
+    "dev": "medusa plugin:develop",
+    "lint": "medusa lint",
+    "typecheck": "tsc --noEmit -p tsconfig.typecheck.json",
+    "typecheck:admin": "tsc --noEmit -p src/admin/tsconfig.json",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx}\"",
+    "test:unit": "TEST_TYPE=unit jest --silent --runInBand",
+    "test:integration:http": "TEST_TYPE=integration:http NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit",
+    "test:integration:modules": "TEST_TYPE=integration:modules NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit",
+    "test:db:up": "docker compose -f docker-compose.test.yml up -d",
+    "test:db:down": "docker compose -f docker-compose.test.yml down -v",
+    "test:db:generate": "DATABASE_URL=postgres://postgres:postgres@localhost:5432/postgres medusa db:generate testContent",
+    "prepublishOnly": "medusa plugin:build",
+    "lessons:check": "node tools/check-lessons.mjs",
+    "changeset": "changeset",
+    "pr:create": "bash scripts/create-pr.sh"
+  },
+  "devDependencies": {
+    "@changesets/changelog-github": "^1.0.1",
+    "@changesets/cli": "^2.29.8",
+    "@hookform/resolvers": "6.0.0",
+    "@lexical/extension": "0.53.0",
+    "@medusajs/admin-sdk": "2.22.7",
+    "@medusajs/cli": "2.22.7",
+    "@medusajs/dashboard": "2.22.7",
+    "@medusajs/eslint-plugin": "2.22.7",
+    "@medusajs/framework": "2.22.7",
+    "@medusajs/icons": "2.22.7",
+    "@medusajs/medusa": "2.22.7",
+    "@medusajs/test-utils": "2.22.7",
+    "@medusajs/ui": "4.2.14",
+    "@swc/core": "^1.15.47",
+    "@swc/jest": "^0.2.39",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.3.2",
+    "@types/react-dom": "^18.2.25",
+    "eslint": "^9.39.5",
+    "jest": "^29.7.0",
+    "jiti": "^2.0.0",
+    "prettier": "3.9.10",
+    "prop-types": "^15.8.1",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-hook-form": "7.83.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "vite": "7.3.7",
+    "yalc": "^1.0.0-pre.53",
+    "zod": "4.6.6"
+  },
+  "peerDependencies": {
+    "@hookform/resolvers": "^6.0.0",
+    "@medusajs/admin-sdk": "^2.22.7",
+    "@medusajs/cli": "^2.22.7",
+    "@medusajs/dashboard": "^2.22.7",
+    "@medusajs/framework": "^2.22.7",
+    "@medusajs/icons": "^2.22.7",
+    "@medusajs/medusa": "^2.22.7",
+    "@medusajs/ui": "^4.2.14",
+    "react": "^18.3.1",
+    "react-hook-form": "^7.83.0",
+    "zod": "^4.6.6"
+  },
+  "engines": {
+    "node": ">=22.22.0"
+  },
+  "packageManager": "yarn@4.18.1+sha512.b2e1e7524f654f2749d32b4ebcb4622473cb5bcbc485df2007e12a154e50162a4d795526768bc5f5b8f81717bfd79deb2472813d86fb5ae2eb551fa9c872b08f",
+  "dependencies": {
+    "@lexical/history": "0.53.0",
+    "@lexical/link": "0.53.0",
+    "@lexical/list": "0.53.0",
+    "@lexical/react": "0.53.0",
+    "@lexical/rich-text": "0.53.0",
+    "@lexical/selection": "0.53.0",
+    "lexical": "0.53.0"
+  }
+}

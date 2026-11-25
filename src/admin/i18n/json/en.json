@@ -1,0 +1,115 @@
+{
+  "label": "Content",
+  "routes": {
+    "children": "Subpages"
+  },
+  "collections": {
+    "fields": {
+      "name": "Name",
+      "description": "Description",
+      "documents": "Documents"
+    }
+  },
+  "documents": {
+    "status": {
+      "draft": "Draft",
+      "published": "Published",
+      "publishedWithChanges": "Published with changes"
+    },
+    "values": {
+      "yes": "Yes",
+      "no": "No",
+      "missingRelation": "{{id}} (not found)"
+    },
+    "sorting": {
+      "oldestFirst": "Oldest first",
+      "newestFirst": "Newest first"
+    },
+    "empty": {
+      "heading": "No documents yet"
+    },
+    "create": {
+      "title": "{{label}}: new document",
+      "description": "New documents are saved as drafts",
+      "success": "{{label}} created",
+      "failed": "Could not create the document"
+    },
+    "form": {
+      "taken": "Already used by another document",
+      "useSuggestion": "Use {{value}}",
+      "slugLocked": "{{label}} is locked. Changing it changes the document's URL.",
+      "unlock": "Unlock"
+    },
+    "edit": {
+      "title": "{{label}}: edit document",
+      "success": "Changes saved",
+      "failed": "Could not save the document",
+      "liveNote": "Changes go live when you publish",
+      "liveOnSaveNote": "Changes go live when you save",
+      "saveDraft": "Save draft",
+      "reload": "Reload"
+    },
+    "details": {
+      "title": "Details",
+      "created": "Created",
+      "updated": "Updated",
+      "dateBy": "{{date}} by {{name}}",
+      "published": "Published"
+    },
+    "publishing": {
+      "title": "Status",
+      "publish": "Publish",
+      "unpublish": "Unpublish",
+      "saveFirst": "Save your changes first",
+      "publishesSaved": "Publishes the last saved version",
+      "live": "Live on the storefront",
+      "saveToPublish": "Save your changes to publish them",
+      "saveDraftToPublish": "Save a draft to publish your changes",
+      "publishTitle": "Publish this document?",
+      "publishDescription": "It becomes visible on the storefront",
+      "unpublishTitle": "Unpublish this document?",
+      "unpublishDescription": "It is removed from the storefront and becomes a draft",
+      "published": "Document published",
+      "unpublished": "Document unpublished",
+      "publishFailed": "Could not publish the document",
+      "unpublishFailed": "Could not unpublish the document",
+      "publishChanges": "Publish changes"
+    },
+    "delete": {
+      "title": "Delete this document?",
+      "description": "This cannot be undone",
+      "publishedDescription": "It is removed from the storefront. This cannot be undone.",
+      "success": "Document deleted",
+      "failed": "Could not delete the document"
+    },
+    "history": {
+      "title": "History",
+      "empty": "No versions yet. The next save starts the history.",
+      "current": "Current",
+      "label": "Version {{version}}: {{change}}",
+      "save": "Saved",
+      "publish": "Published",
+      "unpublish": "Unpublished",
+      "restore": "Restore this version",
+      "restored": "Restored from version {{version}}",
+      "showMore": "Show more",
+      "viewing": "Version {{version}}",
+      "back": "Back to latest",
+      "latestHint": "This is the version you are editing",
+      "restoreTitle": "Restore version {{version}}?",
+      "restoreDescription": "Its content becomes a new draft. Nothing goes live until you publish.",
+      "restoreSuccess": "Version {{version}} restored as a draft",
+      "restoreFailed": "Could not restore the version"
+    },
+    "discard": {
+      "action": "Discard changes",
+      "title": "Discard unpublished changes?",
+      "description": "The document returns to its published content. The discarded draft stays in the history.",
+      "success": "Changes discarded",
+      "failed": "Could not discard the changes"
+    },
+    "columns": {
+      "publishedVersion": "Published version"
+    }
+  }
+}

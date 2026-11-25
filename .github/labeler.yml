@@ -1,0 +1,17 @@
+# Labels a PR by its branch prefix (actions/labeler v7, `head-branch` regexps).
+# The release PR's branch, changeset-release/develop, counts as a chore.
+
+"type: feature":
+  - head-branch: ["^feat/", "^feature/"]
+
+"type: bug":
+  - head-branch: ["^fix/", "^bug/"]
+
+"type: chore":
+  - head-branch: ["^refactor/", "^chore/", "^deps/", "^changeset-release/"]
+
+"type: docs":
+  - head-branch: ["^docs/"]
+
+"type: breaking":
+  - head-branch: ["^breaking/"]
