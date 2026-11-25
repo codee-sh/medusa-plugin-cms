@@ -163,7 +163,10 @@ The tools (read 2026-11-25):
 
 ### Release workflow
 
-`.github/workflows/release.yml`, on push to `develop`, the guide's four jobs:
+`.github/workflows/release.yml`, on push to `develop`, three jobs (the guide's four, `pack` folded into
+`publish` after the first run: Changesets publishes a Yarn project with `yarn npm publish`, which takes
+no packed tarball; Yarn 4 exchanges the OIDC token with npm itself and signs provenance from
+`publishConfig.provenance`, so npm needs no upgrade):
 
 - every job: Node 24 (user, 2026-11-25: the version the maintainer develops on), `corepack enable`, `yarn install --immutable`, `persist-credentials: false`;
   `permissions: {}` at the top and `concurrency` on the workflow and ref.
@@ -171,9 +174,8 @@ The tools (read 2026-11-25):
 - `version` - when the mode is `version`: `changesets/action/version@v2` with `pr-title` and
   `commit-message` "chore: release", and `GITHUB_TOKEN` from `secrets.GITHUB_TOKEN` in the step's env
   for changelog-github.
-- `pack` - when the mode is `publish`: `yarn build`, then `changesets/action/pack@v2`.
-- `publish` - after `pack`: `npm install -g npm@^11.5.1`, then `changesets/action/publish@v2`, which
-  publishes, tags and creates the GitHub release.
+- `publish` - when the mode is `publish`: `yarn build`, then `changesets/action/publish@v2`, which
+  publishes with `yarn npm publish`, tags and creates the GitHub release.
 
 The filename `release.yml` is what the npm trusted publisher names; renaming the workflow breaks
 publication.
