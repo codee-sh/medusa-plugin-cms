@@ -1,5 +1,11 @@
 # @codee-sh/medusa-plugin-cms
 
+## 0.1.1
+
+### Patch Changes
+
+- [#5](https://github.com/codee-sh/medusa-plugin-cms/pull/5) [`625f645`](https://github.com/codee-sh/medusa-plugin-cms/commit/625f6456142d782868a86fa9e95b648d1ac8d97a) Thanks [@kriss145](https://github.com/kriss145)! - The package holds the compiled plugin again. `0.1.0` was published without its build - only its type declarations - so Medusa could not load it; install `0.1.1` or later instead.
+
 ## 0.1.0
 
 ### Minor Changes
