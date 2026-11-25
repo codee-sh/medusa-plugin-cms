@@ -165,7 +165,7 @@ The tools (read 2026-11-25):
 
 `.github/workflows/release.yml`, on push to `develop`, the guide's four jobs:
 
-- every job: Node 22, `corepack enable`, `yarn install --immutable`, `persist-credentials: false`;
+- every job: Node 24 (user, 2026-11-25: the version the maintainer develops on), `corepack enable`, `yarn install --immutable`, `persist-credentials: false`;
   `permissions: {}` at the top and `concurrency` on the workflow and ref.
 - `select-mode` - `changesets/action/select-mode@v2`.
 - `version` - when the mode is `version`: `changesets/action/version@v2` with `pr-title` and
@@ -192,7 +192,8 @@ never asks for it.
   `type: breaking`. The step name in `pr-labeler.yml` says "branch", not "title".
 - `yarn pr:create` takes the branch's first commit subject as the title when `PR_TITLE` is unset.
 - PR template: What, Why, How, Testing; checkboxes for a changeset (or why none) and the gate.
-- `ci.yml` on PRs into `develop` only, Node 22.
+- `ci.yml` on PRs into `develop` only, on Node 22 and 24 (user, 2026-11-25): 22 the lowest `engines`
+  allows, 24 the current LTS; `fail-fast: false`, so a failure on one still reports the other.
 
 ### Removed
 
