@@ -5,7 +5,7 @@
   "author": "Codee",
   "license": "MIT",
   "files": [
-    ".medusa/server",
+    ".medusa/server/**",
     "index.d.ts"
   ],
   "publishConfig": {

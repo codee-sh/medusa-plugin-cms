@@ -437,8 +437,11 @@ its release note. Steps written when Phase 2 and `sub-package-name-and-readme` a
   alone, `1c07705` edits both skills, the catalog and the template for the release PR flow, pushed;
   both skills reinstalled here at `1c07705`, identical to codee-skills; the Skill Router row moved. The
   user's `yarn install` done. Phase 2 done.
-- `in_progress` - Phase 3 (2026-11-25): `develop` on GitHub holds the base commit; `feat/initial-release`
-  holds one commit with the whole plugin, the release changeset and the docs, its tree searched for
-  client names, the gate passed (138 suites, 1116 tests); `.ai/pr-description.md` written in the PR
-  template. `0.0.1` published by the user by hand; the workflow's token lines removed. Next: the
-  deprecation of `0.0.1`, the push and PR #1, its merge, the trusted publisher, the release PR's merge.
+- `in_progress` - Phase 3 (2026-11-25): PR #1 merged; the release run failed on `changesets/action` v2
+  needing Changesets CLI v3 (PR #2, the CLI moved to v3); the release PR #3 merged; the publish failed as
+  Yarn takes no packed tarball (PR #4, `pack` folded into `publish`, provenance through
+  `publishConfig`); `0.1.0` then published with provenance, tagged and released - but without its build:
+  Yarn reads `files: [".medusa/server"]` as 6 declaration files where npm takes the folder. PR #5:
+  `".medusa/server/**"`, a pack check before publishing, and a patch changeset for `0.1.1`. Next: its
+  release PR, then the user deprecates `0.1.0`. For Phase 4, the delivery skill: CLI v3, one publish
+  job with Yarn, the `files` glob, the pack check.

@@ -110,5 +110,13 @@ jobs:
       - name: Build
         run: yarn build
 
+      # Yarn packs by the "files" of package.json; a pattern it reads differently from npm once left
+      # the whole build out of a published version. Stop before publishing an empty package.
+      - name: Check the package holds the build
+        run: |
+          yarn pack --dry-run > pack-contents.txt
+          grep -q ".medusa/server/src/lib/index.js" pack-contents.txt || { cat pack-contents.txt; echo "The package would ship without its build."; exit 1; }
+          grep -q ".medusa/server/src/admin/index.js" pack-contents.txt || { cat pack-contents.txt; echo "The package would ship without its Admin."; exit 1; }
+
       - name: Publish, tag and create the GitHub release
         uses: changesets/action/publish@v2
