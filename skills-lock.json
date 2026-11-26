@@ -13,7 +13,8 @@
       "sourceType": "github",
       "skillPath": "general/codee-lessons/SKILL.md",
       "computedHash": "f877d581b5114d3ec78278ed86c0840e71af0bb610b39e29c5e76868861961dc",
-      "installMode": "copy"
+      "installMode": "copy",
+      "commit": "dcaaeeea07696e02a3055299e9cb0ca1066f3a08"
     },
     "codee-medusa-admin-dashboard": {
       "source": "codee-sh/codee-skills",
@@ -27,7 +28,8 @@
       "sourceType": "github",
       "skillPath": "frameworks/medusa/codee-medusa-backend/SKILL.md",
       "computedHash": "def74f7a176cadde8b75679f5892ae9162e283dcb1595dd860f719223474f3ad",
-      "installMode": "copy"
+      "installMode": "copy",
+      "commit": "dcaaeeea07696e02a3055299e9cb0ca1066f3a08"
     },
     "codee-medusa-backend-conventions": {
       "source": "codee-sh/codee-skills",
@@ -45,31 +47,34 @@
     },
     "codee-medusa-plugin-docs": {
       "source": "codee-sh/codee-skills",
-      "commit": "c28d605f7a850d6fed40ac29b036c2d6da08d0a1",
+      "commit": "69ad48e6d0141af74b7fee54cbb205b50cba977c",
       "sourceType": "github",
       "skillPath": "frameworks/medusa/codee-medusa-plugin-docs/SKILL.md",
-      "computedHash": "3e4244fc1b3a87db2ccbd8d41b3c76f2258f60552c18c5aad8ecbf13b22b81ee"
+      "computedHash": "b9658714fa0e9a3c37611a6d2f02d2db670bd66207d07e123a5cabf7f8a406e1"
     },
     "codee-medusa-scripts": {
       "source": "codee-sh/codee-skills",
       "sourceType": "github",
       "skillPath": "frameworks/medusa/codee-medusa-scripts/SKILL.md",
       "computedHash": "8e6ca9e7fea2ddb562fab604e6d1d8a4b1d5888a98e378fa4f4a7b277e4bd7f7",
-      "installMode": "copy"
+      "installMode": "copy",
+      "commit": "dcaaeeea07696e02a3055299e9cb0ca1066f3a08"
     },
     "codee-medusa-storefront-sdk": {
       "source": "codee-sh/codee-skills",
       "sourceType": "github",
       "skillPath": "frameworks/medusa/codee-medusa-storefront-sdk/SKILL.md",
       "computedHash": "0e1eb92a49102afee8eff5ee242c03becf3a97c54837f99ad979cae386fc7ebf",
-      "installMode": "copy"
+      "installMode": "copy",
+      "commit": "dcaaeeea07696e02a3055299e9cb0ca1066f3a08"
     },
     "codee-medusa-storefront-ux": {
       "source": "codee-sh/codee-skills",
       "sourceType": "github",
       "skillPath": "frameworks/medusa/codee-medusa-storefront-ux/SKILL.md",
       "computedHash": "94a3827a2f8ced75f7b975af95fd6e023985c36de3f60a63482873a11e51c609",
-      "installMode": "copy"
+      "installMode": "copy",
+      "commit": "dcaaeeea07696e02a3055299e9cb0ca1066f3a08"
     },
     "codee-medusa-testing": {
       "source": "codee-sh/codee-skills",
@@ -83,49 +88,63 @@
       "sourceType": "github",
       "skillPath": "general/codee-project-organization/SKILL.md",
       "computedHash": "7585225d590457d6fce916b9e9ba48d41179086b073af52fe3836d92fea8435c",
-      "installMode": "copy"
+      "installMode": "copy",
+      "commit": "dcaaeeea07696e02a3055299e9cb0ca1066f3a08"
     },
     "codee-root-cause": {
       "source": "codee-sh/codee-skills",
       "sourceType": "github",
       "skillPath": "general/codee-root-cause/SKILL.md",
       "computedHash": "66b847f4252f224b4aa6d04f34a83f784ca0ee81be07f4d295c56c86b1ff01d2",
-      "installMode": "copy"
+      "installMode": "copy",
+      "commit": "dcaaeeea07696e02a3055299e9cb0ca1066f3a08"
     },
     "codee-setup-agent-pipeline": {
       "source": "codee-sh/codee-skills",
       "sourceType": "github",
       "skillPath": "general/codee-setup-agent-pipeline/SKILL.md",
       "computedHash": "d8b5fb622fc10f4db6c2740ab0567df27c74da02108b65131d802e2b6135165e",
-      "installMode": "copy"
+      "installMode": "copy",
+      "commit": "dcaaeeea07696e02a3055299e9cb0ca1066f3a08"
     },
     "codee-skill-creator": {
       "source": "codee-sh/codee-skills",
       "sourceType": "github",
       "skillPath": "general/codee-skill-creator/SKILL.md",
       "computedHash": "f082aa6b610fc8fd44eba1f4ff64e2697dddfbf711e7d3305cb67285443e9c48",
-      "installMode": "copy"
+      "installMode": "copy",
+      "commit": "dcaaeeea07696e02a3055299e9cb0ca1066f3a08"
     },
     "codee-spec-notes": {
       "source": "codee-sh/codee-skills",
       "sourceType": "github",
       "skillPath": "general/codee-spec-notes/SKILL.md",
       "computedHash": "50fb650819e0e48a4281c10bd500b9c37a8f60cf44b7d598b10a8ed8ddd1d6dd",
-      "installMode": "copy"
+      "installMode": "copy",
+      "commit": "dcaaeeea07696e02a3055299e9cb0ca1066f3a08"
     },
     "codee-spec-review-medusa": {
       "source": "codee-sh/codee-skills",
       "sourceType": "github",
       "skillPath": "frameworks/medusa/codee-spec-review-medusa/SKILL.md",
       "computedHash": "bd0d7c457712ba641731f7ae41bac0967abebf2090ad03ec635bf5a36dfb5a8a",
-      "installMode": "copy"
+      "installMode": "copy",
+      "commit": "dcaaeeea07696e02a3055299e9cb0ca1066f3a08"
     },
     "codee-spec-writing": {
       "source": "codee-sh/codee-skills",
       "sourceType": "github",
       "skillPath": "general/codee-spec-writing/SKILL.md",
       "computedHash": "c76f60988da97f61c316d6e68494b25cf9292863fc20d43692081f475aa3ea13",
-      "installMode": "copy"
+      "installMode": "copy",
+      "commit": "dcaaeeea07696e02a3055299e9cb0ca1066f3a08"
+    },
+    "codee-technical-writing": {
+      "source": "codee-sh/codee-skills",
+      "commit": "69ad48e6d0141af74b7fee54cbb205b50cba977c",
+      "sourceType": "github",
+      "skillPath": "general/codee-technical-writing/SKILL.md",
+      "computedHash": "4c7b9406e494e7549cd44e00ad609d2907ad395ec9caee20d6f1a9d421384ac6"
     },
     "codee-ts-code-conventions": {
       "source": "codee-sh/codee-skills",
@@ -138,78 +157,89 @@
       "source": "codee-sh/codee-skills",
       "sourceType": "github",
       "skillPath": "general/codee-ui-copy/SKILL.md",
-      "computedHash": "d771313d1b36cc1616ba3c182bdc217b9bb22c0063f928ca5108fd8746d796cd",
-      "installMode": "copy"
+      "computedHash": "986488e643cdabeed9741fdd1cf27a02123727df48e28f3dc6cf09b9754df739",
+      "installMode": "copy",
+      "commit": "dcaaeeea07696e02a3055299e9cb0ca1066f3a08"
     },
     "codee-writing-questions": {
       "source": "codee-sh/codee-skills",
       "sourceType": "github",
       "skillPath": "general/codee-writing-questions/SKILL.md",
       "computedHash": "75be97d6aaefe33a3d853dc93c8064c010cbf170ed1c07db80f7d7d6d2917aaa",
-      "installMode": "copy"
+      "installMode": "copy",
+      "commit": "dcaaeeea07696e02a3055299e9cb0ca1066f3a08"
     },
     "mcloud-auth": {
       "source": "medusajs/medusa-agent-skills",
       "sourceType": "github",
       "skillPath": "plugins/medusa-cloud/skills/mcloud-auth/SKILL.md",
       "computedHash": "3bd090e752d2753db332d8062544b709cdfcfed5fa4080113f08a61c037848ea",
-      "installMode": "copy"
+      "installMode": "copy",
+      "commit": "ba2af48b8854506adbf08670ed9b0fb2f98798c6"
     },
     "mcloud-deployments": {
       "source": "medusajs/medusa-agent-skills",
       "sourceType": "github",
       "skillPath": "plugins/medusa-cloud/skills/mcloud-deployments/SKILL.md",
       "computedHash": "3f7c0c8d48c6add31780a8d29c230a0aea931694e37ea959fc8a66cfbe072ab3",
-      "installMode": "copy"
+      "installMode": "copy",
+      "commit": "ba2af48b8854506adbf08670ed9b0fb2f98798c6"
     },
     "mcloud-environments": {
       "source": "medusajs/medusa-agent-skills",
       "sourceType": "github",
       "skillPath": "plugins/medusa-cloud/skills/mcloud-environments/SKILL.md",
       "computedHash": "788df3974b1a29eb09d09eb4351a782914f034a564063123be4505dd7bc0076b",
-      "installMode": "copy"
+      "installMode": "copy",
+      "commit": "ba2af48b8854506adbf08670ed9b0fb2f98798c6"
     },
     "mcloud-local": {
       "source": "medusajs/medusa-agent-skills",
       "sourceType": "github",
       "skillPath": "plugins/medusa-cloud/skills/mcloud-local/SKILL.md",
       "computedHash": "7bcad3c3c1f956a2ee985c8f8b4d0fc73be81a856bb89ab9a4aedb36970b3a72",
-      "installMode": "copy"
+      "installMode": "copy",
+      "commit": "ba2af48b8854506adbf08670ed9b0fb2f98798c6"
     },
     "mcloud-logs": {
       "source": "medusajs/medusa-agent-skills",
       "sourceType": "github",
       "skillPath": "plugins/medusa-cloud/skills/mcloud-logs/SKILL.md",
       "computedHash": "e843ea6eea0e8170a15d97bd644001e6227d986ac3d5f8ba685a8c84981bcd97",
-      "installMode": "copy"
+      "installMode": "copy",
+      "commit": "ba2af48b8854506adbf08670ed9b0fb2f98798c6"
     },
     "mcloud-organizations": {
       "source": "medusajs/medusa-agent-skills",
       "sourceType": "github",
       "skillPath": "plugins/medusa-cloud/skills/mcloud-organizations/SKILL.md",
       "computedHash": "cbb83fb121e1859486a0b6b91e92f58bf11184bf7e3d91d697afcfad6e5ff013",
-      "installMode": "copy"
+      "installMode": "copy",
+      "commit": "ba2af48b8854506adbf08670ed9b0fb2f98798c6"
     },
     "mcloud-projects": {
       "source": "medusajs/medusa-agent-skills",
       "sourceType": "github",
       "skillPath": "plugins/medusa-cloud/skills/mcloud-projects/SKILL.md",
       "computedHash": "9fda1d6b4bc9a42735dd85123341ba894afb4c2ddba3e81476bf666cbabc48f1",
-      "installMode": "copy"
+      "installMode": "copy",
+      "commit": "ba2af48b8854506adbf08670ed9b0fb2f98798c6"
     },
     "mcloud-variables": {
       "source": "medusajs/medusa-agent-skills",
       "sourceType": "github",
       "skillPath": "plugins/medusa-cloud/skills/mcloud-variables/SKILL.md",
       "computedHash": "762074cb18cb538d7d7d62aef047f2e9a3ac75f07e8ca8ee1308e1103ad5f9c6",
-      "installMode": "copy"
+      "installMode": "copy",
+      "commit": "ba2af48b8854506adbf08670ed9b0fb2f98798c6"
     },
     "using-medusa-cloud": {
       "source": "medusajs/medusa-agent-skills",
       "sourceType": "github",
       "skillPath": "plugins/medusa-cloud/skills/using-medusa-cloud/SKILL.md",
       "computedHash": "9ebaeac2d8b38a6f9e00761b42ddd36ae841435cdc10d4cf20efd71a368605ac",
-      "installMode": "copy"
+      "installMode": "copy",
+      "commit": "ba2af48b8854506adbf08670ed9b0fb2f98798c6"
     }
   }
 }
