@@ -1,6 +1,6 @@
 # Development
 
-Running the plugin linked into a Medusa project while you change it. For contributors; the tests are in [Tests](./tests.md), and how a change reaches a release is in [SDLC.md](../SDLC.md).
+This page shows how to run the plugin linked into a Medusa project while you change it. It is for contributors. [Tests](./tests.md) covers the tests, and [SDLC.md](../SDLC.md) covers how a change reaches a release.
 
 ## Requirements
 
@@ -24,16 +24,16 @@ In the project, once:
 npx medusa plugin:add @mostrajs/cms
 ```
 
-Register the plugin in the project's `medusa-config.ts` as the README's [Basic setup](../README.md#basic-setup) shows, and start the project with `medusa develop`.
+Register the plugin in the project's `medusa-config.ts`, as [Basic setup](../README.md#basic-setup) in the README shows. Then start the project with `medusa develop`.
 
 ## How `yarn dev` reaches the project
 
-`yarn dev` runs `medusa plugin:develop`. It compiles the backend into `.medusa/server` on every change and pushes it to the linked project, which restarts on its own. The plugin's Admin is not bundled: the project serves it straight from the plugin's `src/admin`, so an Admin change shows on reload.
+`yarn dev` runs `medusa plugin:develop`. On every change, it compiles the backend into `.medusa/server` and pushes the result to the linked project, which restarts on its own. The plugin's Admin is not bundled. The project serves the Admin straight from `src/admin` in the plugin, so you see an Admin change when you reload the page.
 
-- Do not run `yarn build` while `yarn dev` runs. A build replaces `.medusa/server` with a bundled Admin and cuts the link to the source until `yarn dev` starts again.
-- `yarn dev` writes no type declarations. When a change to a config type must reach the project's typecheck, run `npx tsc -p tsconfig.json --emitDeclarationOnly`, then `npx yalc publish --push --no-scripts`.
-- A push carries what `yarn dev` last compiled. With `yarn dev` stopped, start it before pushing.
-- The project's Vite keeps its own pre-bundled copy of `@mostrajs/cms/admin-extensions`. After a change there, or after `yarn dev` restarts, stop the project, delete its `node_modules/.vite`, and start it again.
+- Do not run `yarn build` while `yarn dev` runs. `yarn build` replaces `.medusa/server` with a bundled Admin and cuts the link to the source until you start `yarn dev` again.
+- `yarn dev` writes no type declarations. When the project's typecheck must see a change to a config type, run `npx tsc -p tsconfig.json --emitDeclarationOnly`, then `npx yalc publish --push --no-scripts`.
+- When you push to the project, you push what `yarn dev` compiled last. If `yarn dev` is stopped, start it before you push.
+- Vite in the project keeps its own pre-bundled copy of `@mostrajs/cms/admin-extensions`. After you change that entry point, or after `yarn dev` restarts, stop the project, delete `node_modules/.vite` in the project, and start the project again.
 
 ## Before you open a pull request
 
@@ -47,4 +47,4 @@ yarn format:check
 yarn test:unit
 ```
 
-Add a changeset for a change a project would notice: `yarn changeset`.
+When a project would notice your change, add a changeset with `yarn changeset`.

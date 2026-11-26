@@ -113,7 +113,7 @@ medusaIntegrationTestRunner({
 
         expect(response.status).toBe(400)
         expect(response.data.message).toBe(
-          "The file media provider cannot be searched"
+          'The media provider "file" does not support search'
         )
       })
     })

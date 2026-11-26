@@ -1,14 +1,14 @@
 # Field components
 
-Replacing a field's input with a component of your own, and reading the document from it. The field's config is in [Fields](./fields.md).
+This page explains how to replace the input of a field with a component of your own, and how that component reads the document. The config of a field is in [Fields](./fields.md).
 
 ## Adding a field component
 
-When the CMS cannot draw what a field needs, you draw it yourself - a product picked after a category, say, or a link with a switch that depends on the page. A field component is a React component of your Admin, registered under a name and attached to one field or several by a layout node.
+When the plugin cannot draw what a field needs, you draw it yourself. Examples are a product picked after a category, and a link with a switch that depends on the page. A field component is a React component in your Admin. You register it under a name, and a [layout node](#the-layout-node) attaches it to one field or several.
 
-Inside it everything is yours: as many inputs as you like, data fetched however you like. Out of it comes one value of each field's type, which a save checks as it checks any field. So a component never holds a new kind of data.
+Inside the component, everything is yours: as many inputs as you like, and data fetched however you like. The component writes one value per field, of the type of that field. When the document is saved, the plugin checks each value as it checks any other field. So a component never holds a new kind of data.
 
-1. Register the component in the file that registers your options hooks. Give it a loader, so the Admin imports it when a form first shows it rather than when the Admin starts:
+1. Register the component in the file that registers your [options hooks](./fields.md#options-from-a-hook). Give it a loader, so that the Admin imports the component when a form first shows it, not when the Admin starts:
 
    ```ts
    // src/admin/cms/cms-extensions.ts
@@ -19,7 +19,7 @@ Inside it everything is yours: as many inputs as you like, data fetched however 
    })
    ```
 
-2. Attach it in the layout, wherever a field can go - a section, a tab, a collapsible or a group:
+2. Attach the component in the layout. It goes wherever a field can go, in a section, a tab, a collapsible, or a group:
 
    ```ts
    {
@@ -29,7 +29,7 @@ Inside it everything is yours: as many inputs as you like, data fetched however 
    }
    ```
 
-3. Write the component. It gets every field under its key, and draws each one with the dashboard's own `Form` parts, bound to the CMS form by the field's `name`:
+3. Write the component. It receives each field under the key of that field. It draws each field with the dashboard's own `Form` parts. The `name` of the field binds each part to the document form:
 
    ```tsx
    // src/admin/cms/cta-link.tsx
@@ -78,45 +78,46 @@ Inside it everything is yours: as many inputs as you like, data fetched however 
 
 ### `defineCmsFieldComponent(name, component)`
 
-Registers a component under the name a layout node gives. The second argument is a loader or the component itself:
+Registers a component under the name that a layout node gives in `component`. The second argument is either a loader or the component itself:
 
-- **A loader**, `{ load }` - `load` resolves to a module with the component as its default export, as `React.lazy` takes it. The Admin imports it when a form first shows the node.
-- **The component as it is** - `defineCmsFieldComponent("cta-link", CtaLink)`. A small component given this way spares the editor a moment of `Loading`.
+- **A loader**, `{ load }` - `load` resolves to a module whose default export is the component, the shape that `React.lazy` takes. The Admin imports the module when a form first shows the node.
+- **The component itself** - `defineCmsFieldComponent("cta-link", CtaLink)`. When you pass a small component this way, the editor does not see `Loading` for a moment.
 
 > [!NOTE]
-> The `.js` path in the loader is what the Admin's Node16 resolution asks of a dynamic import; Vite resolves it to the `.tsx` source.
+> The loader imports a `.js` path because the Node16 module resolution of the Admin requires it for a dynamic import. Vite resolves that path to the `.tsx` source.
 
 ### The layout node
 
 | Option | Type | Default | Description |
 |---|---|---|---|
 | `type` | `"component"` | - | Marks the node as a field component. |
-| `component` | `string` | - | The name the component is registered under. |
-| `fields` | `string[]` or `Record<string, string>` | - | The fields the component edits. |
+| `component` | `string` | - | The name that the component is registered under. |
+| `fields` | `string[]` or `Record<string, string>` | - | The fields that the component edits. |
 | `label` | `CmsText` | - | A header over a node of several fields. |
+| `description` | `CmsText` | - | A text under the header, shown only when the node has a `label`. |
 
 `fields` takes one of two forms:
 
-- **A list**, `fields: ["cta_href", "cta_external"]` - each field is handed to the component under its own name.
-- **An object**, `fields: { color: "brand_color" }` - maps the component's keys to fields, to use one component for fields of different names.
+- **A list**, `fields: ["cta_href", "cta_external"]` - the component receives each field under the name of that field.
+- **An object**, `fields: { color: "brand_color" }` - maps the keys of the component to fields, so that one component can edit fields with different names.
 
-What the CMS draws around the component depends on how many fields the node holds:
+What the plugin draws around the component depends on how many fields the node holds:
 
-- **A node of one field** looks like the field: the CMS draws its label, description and error around the component.
-- **A node of several** draws a header when it has a `label`, and the component draws every input, label and error of its fields.
+- **A node of one field** looks like the field. The plugin draws the label, the description, and the error of the field around the component.
+- **A node of several fields** shows a header when it has a `label`. The component draws every input, label, and error of its fields.
 
 ### The component's props
 
-Each prop is a record by key. `CmsFieldComponentProps<"cta_href" | "cta_external">` types the keys, so a typo fails the typecheck:
+`values`, `fields`, `errors`, and `inputProps` are records with one entry per key, and `onChange` and `onBlur` take a key. `CmsFieldComponentProps<"cta_href" | "cta_external">` types the keys, so a typo fails the typecheck:
 
 | Prop | What it holds |
 |---|---|
-| `values` | Each field's stored value, as its type holds it |
-| `onChange(key, value)`, `onBlur(key)` | Write a field and mark it touched, for a component that does not use `Form.Field` |
-| `fields` | Each field's config, shaped as below |
-| `errors` | Each field's error message |
-| `inputProps` | Each field's `name` in the form, and the `id`, `aria-*` and `ref` to spread on its main input, so the label and the error point at it and a failed save focuses it |
-| `disabled` | Whether the CMS disabled one of its fields; draw the inputs disabled when it did |
+| `values` | The stored value of each field, as the type of the field holds it |
+| `onChange(key, value)`, `onBlur(key)` | `onChange` writes a field and `onBlur` marks it as touched, for a component that does not use `Form.Field` |
+| `fields` | The config of each field, shaped as below |
+| `errors` | The error message of each field |
+| `inputProps` | The `name` of each field in the form, and the `id`, `aria-*`, and `ref` to spread on the main input of the field. The label and the error then point at that input, and the form focuses it when saving fails |
+| `disabled` | Whether the plugin disabled one of the fields of the component. When it did, draw the inputs disabled |
 
 Each entry of `fields` holds:
 
@@ -130,32 +131,32 @@ Each entry of `fields` holds:
 }
 ```
 
-### When a component cannot show
+### When a component cannot be shown
 
-The rest of the form works and saves in each of these cases:
+In each of these cases, the rest of the form still works and saves:
 
-- **No one registered the name** - the node shows `Unavailable: no component named "<name>" is registered` in its place.
+- **No component is registered under the name** - the node shows `Unavailable: no component named "<name>" is registered` in place of the component.
 - **The component throws, or its loader fails** - the node shows `Could not show this part of the form`.
 - **The loader is still running** - the node shows the stored values disabled, with `Loading`.
 
 ### What a component cannot hold
 
-- **A slug, a media or a unique field** cannot be drawn by a component; the config refuses such a node.
-- **One value per field.** Whatever a component builds inside, it writes one value of the field's type. A nested structure has no column to go to; store a reference to a record of your own instead.
+- **No slug, media, `richtext`, or unique field.** A component cannot draw one of these fields, and the config refuses such a node. The plugin draws the input of a slug, a media, or a `richtext` field itself. It checks a unique value against the live documents as the editor types.
+- **One value per field.** Whatever a component builds inside, it writes one value of the type of the field. A nested structure has no column to go to, so store a reference to a record of your own instead.
 
 ## Reading the document
 
-A component reads the rest of the document, never writing it. Two hooks give it what it needs: `useDocumentValue` for the values, `useBlockPlace` for where the component sits.
+A component can read the rest of the document, but never writes it. Two hooks give the component what it needs: `useDocumentValue` for the values, and `useBlockPlace` for where the component sits.
 
 ### `useDocumentValue(select)`
 
-Returns what the selector picks from the document. It renders the component again only when that pick changes, compared by content, so typing in another field costs nothing:
+Returns what the selector picks from the document. The hook renders the component again only when the picked value changes, compared by content. So typing in another field costs nothing:
 
 ```ts
 const title = useDocumentValue((document) => document.fields.title)
 ```
 
-The document is shaped for components, not as the form holds it, as `CmsDocumentValue`:
+The hook gives the document as `CmsDocumentValue`, a shape made for components rather than the shape the form holds:
 
 ```ts
 type CmsDocumentValue = {
@@ -172,15 +173,15 @@ type CmsBlockValue = {
 
 Edge cases:
 
-- **In the create form**, `fields` holds only the fields the form shows.
-- **Outside a CMS document form**, `useDocumentValue` throws.
+- **In the create form**, `fields` holds only the fields that the form shows.
+- **Outside the plugin's document forms**, `useDocumentValue` throws.
 
 ### `useBlockPlace()`
 
-Returns the place of the block the component sits in, from the document down, so a component in a block finds its own block:
+Returns the place of the block that holds the component, as a path from the document down. A component in a block uses it to find its own block:
 
 ```json
 [{ "area": "sections", "index": 2 }]
 ```
 
-It returns `undefined` for a component of the document's own fields.
+For a component on the document's own fields, `useBlockPlace` returns `undefined`.

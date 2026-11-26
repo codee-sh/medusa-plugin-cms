@@ -92,7 +92,7 @@ const validateFilterableFields = (
 
     if (field.kind !== "boolean") {
       throw buildConfigError(
-        `${path}: field "${field.name}" is filterable, which only a boolean field can be yet`
+        `${path}: field "${field.name}" is filterable, but only a boolean field can be filterable`
       )
     }
   }

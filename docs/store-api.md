@@ -1,41 +1,41 @@
 # Store API
 
-How a storefront reads published documents through the store routes, and how a collection's and a field's `store` config shape what they answer. Media records are in [Media](./media.md), blocks and areas in [Blocks](./blocks.md), and the workflows behind the routes in [Workflows](./workflows.md).
+This page covers the store routes, which serve published documents to a storefront. It also covers the `store` config of a collection and of a field, which shapes what the routes answer. [Media](./media.md) covers media records, [Blocks](./blocks.md) covers blocks and areas, and [Workflows](./workflows.md) covers the workflows behind the routes.
 
 ## The routes
 
-Every collection gets three read-only routes under `/store/cms`, named by its `slug`:
+Every collection gets three read-only routes under `/store/cms`, addressed by the collection's `slug`:
 
 | Route | Answers |
 |---|---|
-| `GET /store/cms/:collection` | One page of the collection's published documents, newest published first, as `documents`, `count`, `limit` and `offset`. |
+| `GET /store/cms/:collection` | One page of the collection's published documents, newest published first, as `documents`, `count`, `limit`, and `offset`. |
 | `GET /store/cms/:collection/:id` | One published document by its id, as `document`. |
 | `GET /store/cms/:collection/slug/:slug` | One published document by the value of the collection's `slug` field, as `document`. |
 
-The answers are shown in [What a document looks like](#what-a-document-looks-like).
+[What a document looks like](#what-a-document-looks-like) shows the answers.
 
 ### Only published documents
 
-The store only ever sees published documents:
+The Store API serves published documents only:
 
-- A draft that was never published, an unpublished document and a deleted one answer `404` and are left out of every list.
-- In a collection with `drafts: true`, a published document keeps answering its published content while a newer draft waits. It answers the new content once the draft is published.
+- A draft that was never published, an unpublished document, and a deleted document never appear in a list. Reading one of them by its id or slug answers `404`.
+- If the collection has [drafts](./collections.md#drafts-and-versions) (`drafts: true`), the routes keep serving the published content of a document while a newer draft waits. When an editor publishes the draft, the routes serve the new content.
 
 ### Reading a singleton
 
-A singleton is read through its list:
+You read a [singleton](./collections.md#singletons) through the list route:
 
 ```http
 GET /store/cms/settings?limit=1
 ```
 
-The document is `documents[0]`, which is absent until the document's first save.
+The document is `documents[0]`. It is absent until the document is first saved.
 
 ## The publishable API key
 
-The routes sit under `/store`, so Medusa requires a publishable API key on every request, as it does for its own store routes.
+The routes sit under `/store`, so Medusa requires a publishable API key on every request, as for Medusa's own store routes.
 
-- Send it in the `x-publishable-api-key` header. A request without one answers `400`.
+- Send the key in the `x-publishable-api-key` header. Without the key, the route answers `400`.
 - Create a key in the Admin under **Settings > Publishable API Keys**.
 
 ```bash
@@ -44,7 +44,7 @@ curl "http://localhost:9000/store/cms/page/slug/about-us" \
 ```
 
 > [!NOTE]
-> The CMS does not scope documents by the key's sales channels: any valid key reads every collection the store may read.
+> The plugin does not scope documents by the key's sales channels. Any valid key reads every collection in the Store API.
 
 ### With the Medusa JS SDK
 
@@ -115,32 +115,32 @@ GET /store/cms/page/slug/about-us
 
 A document holds:
 
-- **`id`, `published_at` and `updated_at`.** `id` is in every answer, whatever `fields` selects.
-- **`metadata`**, whole, when the model has a `metadata` column; `null` when it is empty.
-- **Every public field** - each field without `store: { hidden: true }` - by its name. See [How a value comes](#how-a-value-comes).
-- **Each media field** as its record in place of the stored value, or `null`, or a list of records - see [Media](./media.md#what-a-read-returns).
-- **Each area**, on a single document, as a list of its blocks in their order. See [Blocks in an area](#blocks-in-an-area).
+- **`id`, `published_at`, and `updated_at`.** Every answer carries `id`, whatever `fields` selects.
+- **`metadata`.** It comes whole when the model has a `metadata` column, and as `null` when it is empty.
+- **Every public field, under its name.** A field is public unless it has `store: { hidden: true }`. See [The form of each value](#the-form-of-each-value).
+- **Each media field.** It comes as its media record in place of the stored value, as `null`, or as a list of records. See [Media](./media.md#what-a-read-returns).
+- **Each area, on a single document.** It comes as a list of the area's blocks, in their order. See [Blocks in an area](#blocks-in-an-area).
 
-### How a value comes
+### The form of each value
 
-A value comes as the column holds it:
+Each value comes as its column holds it:
 
 | Field | Comes as |
 |---|---|
 | a date | ISO text |
 | a list | an array |
 | `select` or `combobox` | the stored value |
-| `relationship` | the related document's id, which you read with its own request when you need it |
-| `richtext` | its document, an object and not a string |
+| `relationship` | the id of the related document, which you fetch with a request of its own when you need it |
+| `richtext` | the rich text document, as an object and not a string |
 
 ### Blocks in an area
 
-- A block has its `id`, its `block_type`, its public fields and its own areas, at any depth.
-- A block of a type its area no longer allows is left out, and the server logs a warning with its id.
+- Each block carries `id`, `block_type`, its public fields, and its own areas, nested to any depth.
+- When an area no longer allows a block type, the routes leave out the blocks of that type. The server logs a warning with the ids of those blocks.
 
 ### What is never answered
 
-Nothing of the CMS's own bookkeeping is answered:
+The routes never answer what the plugin keeps for its own bookkeeping:
 
 - `status`
 - `created_by` and `updated_by`
@@ -149,7 +149,7 @@ Nothing of the CMS's own bookkeeping is answered:
 
 ### A list
 
-A list answers the same documents without their areas, unless `fields` asks for one:
+The list route answers the same documents without their areas, unless `fields` asks for an area:
 
 ```json
 {
@@ -166,16 +166,16 @@ A list answers the same documents without their areas, unless `fields` asks for 
 
 ## Choosing fields
 
-`fields` takes Medusa's syntax, as on `/store/products`, on every route:
+Every route takes `fields` in Medusa's syntax, as `/store/products` does:
 
 | `fields` | Answers |
 |---|---|
-| left out | The route's defaults: every public column on a list, every public column and area on a single document, unless the collection's `store` config sets its own. |
-| `title,slug` | Only these, with `id`. |
+| left out | The defaults of the route: every public column on a list, and every public column and area on a single document. The collection's `store` config can set other defaults. |
+| `title,slug` | Only these fields, plus `id`. |
 | `+sections` | The defaults and the `sections` area. |
 | `-metadata` | The defaults without `metadata`. |
 
-A name that is hidden or unknown is left out without an error. So when `internal_note` is hidden, `fields=title,internal_note` answers `id` and `title`:
+The routes skip a hidden or unknown name without an error. If `internal_note` is hidden, `fields=title,internal_note` answers `id` and `title`:
 
 ```http
 GET /store/cms/page/slug/about-us?fields=title,internal_note
@@ -187,14 +187,14 @@ GET /store/cms/page/slug/about-us?fields=title,internal_note
 
 ### Selecting blocks in an area
 
-An area is selected by a path of the area, the block type and the field:
+To select blocks in an area, write a path of the area, the block type, and the field:
 
 | `fields` | Answers |
 |---|---|
-| `sections` or `*sections` | The whole area: every block type it allows, each with its public fields and its areas. |
-| `sections.hero` or `sections.hero.*` | The area's `hero` blocks, whole; the other block types are left out. |
-| `sections.hero.heading` | The area's `hero` blocks with `heading` only. |
-| `sections.grid.items.grid_item.title` | The `grid` blocks, each with its `items` area holding `grid_item` blocks with `title` only. |
+| `sections` or `*sections` | The whole area, with every block type the area allows. Each block comes with its public fields and its areas. |
+| `sections.hero` or `sections.hero.*` | The area's `hero` blocks, whole. Blocks of other types are left out. |
+| `sections.hero.heading` | The area's `hero` blocks, with `heading` only. |
+| `sections.grid.items.grid_item.title` | The `grid` blocks. In each one, the `items` area holds the `grid_item` blocks with `title` only. |
 
 - A block always keeps its `id` and `block_type`.
 - A path without a block type, such as `sections.heading`, selects nothing.
@@ -215,10 +215,10 @@ GET /store/cms/page/slug/about-us?fields=title,sections.hero.heading
 
 ### Deep paths and the relations limit
 
-Medusa counts each level of a path against the store's relations limit: `sections.hero.heading` has two, `sections.grid.items.grid_item.title` four.
+Medusa counts each level of a path against the store relations limit. For example, `sections.hero.heading` has two levels, and `sections.grid.items.grid_item.title` has four.
 
 - The limit is your project's `http.storeRelationsLimit`, 3 by default.
-- A deeper block path answers `400` until you raise the limit.
+- The routes answer `400` to a deeper block path until you raise the limit.
 - Raise it for one collection with `storeRelationsLimit` in its [`store` config](#a-collections-store-config), or for every store route in `medusa-config.ts`.
 - Selecting a whole area, `sections` or `*sections`, stays within the default.
 
@@ -228,11 +228,11 @@ The list route takes:
 
 | Parameter | Default | Description |
 |---|---|---|
-| `limit` | 20, or the collection's `store.list.defaultLimit` | Documents per page: at most 100, and at most 50 when `fields` selects an area. |
+| `limit` | 20, or the collection's `store.list.defaultLimit` | Documents per page. At most 100, or at most 50 when `fields` selects an area. |
 | `offset` | 0 | Documents to skip. |
-| `order` | `-published_at` | A public column, with `-` in front for descending: `order=title`, `order=-updated_at`. |
+| `order` | `-published_at` | A public column to sort by, with `-` in front for descending order, such as `order=title` or `order=-updated_at`. |
 | `fields` | the route's defaults | See [Choosing fields](#choosing-fields). |
-| a filterable field | - | `featured=true` or `featured=false` lists only the documents whose field matches. Only a field with `store: { filterable: true }` is a parameter. |
+| a filterable field | - | Lists only the documents whose field matches, such as `featured=true` or `featured=false`. Only a field with `store: { filterable: true }` is a parameter. |
 
 The id and slug routes take `fields` only.
 
@@ -243,12 +243,12 @@ curl "http://localhost:9000/store/cms/page?featured=true&order=title&limit=12&of
 
 ### When a list query is refused
 
-- `order` names a `richtext` field, an area, a hidden field or anything that is not a column - `400`.
-- Any other key, a filter on a field that is not filterable included - `400`.
+- When `order` names a `richtext` field, an area, a hidden field, or anything that is not a column, the route answers `400`.
+- When the query has any other key, including a filter on a field that is not filterable, the route answers `400`.
 
 ## A collection's `store` config
 
-Every collection is in the store API unless you keep it out. `store` takes `false` or an object, `CollectionStoreConfig`. The object follows Medusa's own `QueryConfig`, as `listProductQueryConfig` and `retrieveProductQueryConfig` do for products:
+Every collection is in the Store API unless you keep it out. `store` takes `false` or an object, `CollectionStoreConfig`. The object follows Medusa's own `QueryConfig`, as `listProductQueryConfig` and `retrieveProductQueryConfig` do for products:
 
 ```ts
 import type { QueryConfig } from "@medusajs/framework/types"
@@ -262,15 +262,15 @@ type CollectionStoreConfig = {
 
 | Option | Type | Default | Description |
 |---|---|---|---|
-| `store` | `false` or `CollectionStoreConfig` | in the store API | `false` keeps the collection out: its routes answer `404`, the same as for a collection that does not exist. |
-| `list.defaults` | `string[]` | every public column | The fields a list answers without `fields`: public fields and columns only, never an area. |
-| `list.defaultLimit` | `number` | `20` | The list's page size without `limit`, from 1 to 100. |
-| `list.storeRelationsLimit` | `number` | your project's `http.storeRelationsLimit` | The relations limit of the list. |
-| `retrieve.defaults` | `string[]` | every public column and area | The fields the id and slug routes answer without `fields`. |
+| `store` | `false` or `CollectionStoreConfig` | in the Store API | `false` keeps the collection out, and its routes answer `404` as for a collection that does not exist. |
+| `list.defaults` | `string[]` | every public column | The fields a list answers when the request has no `fields`, from public fields and columns only, never an area. |
+| `list.defaultLimit` | `number` | `20` | The page size of the list when the request has no `limit`, from 1 to 100. |
+| `list.storeRelationsLimit` | `number` | your project's `http.storeRelationsLimit` | The relations limit of the list route. |
+| `retrieve.defaults` | `string[]` | every public column and area | The fields the id and slug routes answer when the request has no `fields`. |
 | `retrieve.storeRelationsLimit` | `number` | your project's `http.storeRelationsLimit` | The relations limit of the id and slug routes. |
 
 > [!NOTE]
-> There is no `allowed` key: what a client may select is every public field, the document's columns and the paths into its areas, derived from the config.
+> There is no `allowed` key. The plugin derives what a client may select from the config: every public field, the columns of the document, and the paths into its areas.
 
 ```ts
 {
@@ -308,17 +308,17 @@ type CollectionStoreConfig = {
 }
 ```
 
-### When the `store` config fails the start
+### When the `store` config stops Medusa from starting
 
-The registry checks the `store` config at startup and refuses:
+The plugin checks the `store` config at startup. Medusa does not start when:
 
-- A `defaults` entry that is not a public field: `store.list.defaults names "internal_note", which is not a public field`.
-- An area among a list's defaults.
-- A `defaultLimit` outside 1 to 100.
+- A `defaults` entry is not a public field: `store.list.defaults names "internal_note", which is not a public field`. For the id and slug routes, the message starts with `store.retrieve.defaults`.
+- The defaults of a list include an area: `store.list.defaults names the area "<name>", and a list carries no areas by default`.
+- A `defaultLimit` is outside 1 to 100: `store.list.defaultLimit must be a whole number from 1 to 100`.
 
 ## A field's `store` config
 
-A field's `store` says what it does in the store API, as its `admin` says what it does in the Admin. A block's field takes it too.
+The `store` config of a field sets what the field does in the Store API, as `admin` sets what it does in the Admin. A field of a block takes `store` too.
 
 ```ts
 // exported from @mostrajs/cms
@@ -330,22 +330,22 @@ type FieldStoreConfig = {
 
 | Option | Type | Default | Description |
 |---|---|---|---|
-| `hidden` | `true` | public | Keeps the field out of every store answer. |
-| `filterable` | `true` | not a parameter | Makes the field a parameter of the collection's list: `?featured=true`. A collection's public `boolean` field only. |
+| `hidden` | `true` | public | Keeps the field out of every Store API answer. |
+| `filterable` | `true` | not a parameter | Makes the field a parameter of the list route, such as `?featured=true`. Only a public `boolean` field of a collection takes it. |
 
-With `hidden: true`:
+When a field has `hidden: true`:
 
 - `fields` cannot select the field.
-- A block's field is left out of its area.
-- The list cannot order by it.
+- If the field belongs to a block, the blocks in the area come without it.
+- The list route cannot sort by the field.
 
-### When a filterable field fails the start
+### When a filterable field stops Medusa from starting
 
-The registry refuses at startup:
+Medusa does not start when the config has:
 
-- A filterable field that is not a boolean.
-- A filterable field that is hidden.
-- Any filterable field of a block.
+- a filterable field that is not a boolean
+- a filterable field that is hidden
+- any filterable field of a block
 
 ## Errors
 
@@ -361,33 +361,33 @@ GET /store/cms/pages
 
 ### When a request fails
 
-- No publishable API key, or one Medusa does not accept - `400`.
-- A query key the route does not take - `400`.
-- A `limit` over 100 - `400`.
-- A filter value that is not `true` or `false` - `400`.
-- An `order` the list cannot sort by - `400`.
-- An area on a list of more than 50 - `400`.
-- A path deeper than the relations limit - `400`.
-- An unknown collection, or one with `store: false` - `Collection "<slug>" was not found`, `404`.
-- A document that is not published, deleted or unknown, by its id - `Document "<id>" was not found in collection "<slug>"`, `404`.
-- The same by its slug - `Document with slug "<slug>" was not found in collection "<slug>"`, `404`.
-- A slug route on a collection without a slug field - `Collection "<slug>" has no slug field`, `404`.
-- A config that does not resolve - `500`, with its problems in the server log.
+- A request without a publishable API key, or with a key Medusa does not accept, gets `400`.
+- A query key the route does not take gets `400`.
+- A `limit` over 100 gets `400`, with `Use a limit of at most 100`.
+- A filter value other than `true` or `false` gets `400`.
+- An `order` the list cannot sort by gets `400`.
+- Selecting an area on a list with a `limit` over 50 gets `400`.
+- A path deeper than the relations limit gets `400`.
+- An unknown collection, or one with `store: false`, gets `404`, with `Collection "<slug>" was not found`.
+- Reading by id a document that is not published, deleted, or unknown gets `404`, with `Document "<id>" was not found in collection "<slug>"`.
+- Reading such a document by slug gets `404`, with `Document with slug "<slug>" was not found in collection "<slug>"`.
+- The slug route on a collection without a slug field gets `404`, with `Collection "<slug>" has no slug field`.
+- When the config does not resolve, the route answers `500`, and the server log lists the problems.
 
 ## Edge cases
 
 ### Caching
 
-When your project runs Medusa's Caching Module, the store routes read through it. Every write the CMS makes - a save, a publish, an unpublish, a delete - clears what it touched, so a publish is served on the next request. Without the module every read goes to the database.
+When your project runs Medusa's Caching Module, the store routes read through it. Whenever the plugin saves, publishes, unpublishes, or deletes a document, it clears the cached answers that the change touched. A document you publish is then served on the next request. Without the module, the routes read the database on every request.
 
 ### Your own data on a document
 
-A path the CMS does not know, such as a module link of your own, is not selectable by default. A middleware of yours on `/store/cms/*` can add it to `req.allowed`, as for Medusa's own store routes. The CMS then reads it with the document and answers it under its name.
+By default, a client cannot select a path the plugin does not know, such as a module link of your own. Your own middleware on `/store/cms/*` can add the path to `req.allowed`, as for Medusa's own store routes. The plugin then reads that data with the document and answers it under the name of the path.
 
 ### Reading content in your own code
 
-The routes run `listPublishedCmsDocumentsWorkflow` and `getPublishedCmsDocumentWorkflow`, exported from `@mostrajs/cms/workflows`. Your own route or subscriber gets the same answer - see [Workflows](./workflows.md).
+The routes run `listPublishedCmsDocumentsWorkflow` and `getPublishedCmsDocumentWorkflow`, which `@mostrajs/cms/workflows` exports. When your own route or subscriber runs them, it gets the same answer. See [Workflows](./workflows.md).
 
 ### Links in content
 
-Pass every stored link through `sanitizeUrl` before you render it - see [Fields](./fields.md#text-links-and-safe-output).
+Pass every stored link through `sanitizeUrl` before you render it. See [Fields](./fields.md#text-links-and-safe-output).

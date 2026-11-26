@@ -20,7 +20,7 @@ export const listCmsMediaStep = createStep(
     if (!provider.list) {
       throw new MedusaError(
         MedusaError.Types.NOT_ALLOWED,
-        `The ${getRegistry(container).media!.identifier} media provider cannot be searched`
+        `The media provider "${getRegistry(container).media!.identifier}" does not support search`
       )
     }
 

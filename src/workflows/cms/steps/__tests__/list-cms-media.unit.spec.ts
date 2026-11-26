@@ -89,7 +89,7 @@ describe("listCmsMediaStep", () => {
   it("refuses a search when the provider has no list", async () => {
     await expect(runStep({ limit: 20, offset: 0 })).rejects.toMatchObject({
       type: "not_allowed",
-      message: "The file media provider cannot be searched",
+      message: 'The media provider "file" does not support search',
     })
   })
 })

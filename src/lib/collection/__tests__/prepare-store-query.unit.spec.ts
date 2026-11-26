@@ -195,7 +195,7 @@ describe("prepareStoreQuery", () => {
       {
         fields: [{ ...fieldOf("title"), store: { filterable: true as const } }],
       },
-      /field "title" is filterable, which only a boolean field can be yet/,
+      /field "title" is filterable, but only a boolean field can be filterable/,
     ],
     [
       "a hidden field",

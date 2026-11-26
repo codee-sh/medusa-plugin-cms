@@ -1,10 +1,10 @@
 # Validation
 
-Rules over a model's fields together, and your own rules at a write. A single field's schemas are in [Fields](./fields.md#a-fields-config).
+This page covers rules that check a model's fields together, and your own rules that refuse a write. [Fields](./fields.md#a-fields-config) covers the schemas of a single field.
 
 ## Rules over a model's fields
 
-A field's schemas check that field alone. A check that needs several fields - a button label that needs a link - is a rule of the model. It goes in `serverValidation` and `serverPublishValidation` beside `fields`, on a collection or a block type. Each is a Zod object schema over the model's own fields:
+A field's schemas check only that field. When a check needs several fields, such as a button label that needs a link, it is a rule of the model. Model rules go in `serverValidation` and `serverPublishValidation`, next to `fields`, on a collection or a block type. Each key takes a Zod object schema over the model's own fields:
 
 ```ts
 // src/cms/config.ts
@@ -30,37 +30,37 @@ const BUTTON_LINK_RULE = z
 
 | Rule | Runs |
 |---|---|
-| `serverValidation` | At every save, a draft's included, and in the Admin's live validation while the editor types. |
-| `serverPublishValidation` | Besides `serverValidation` at a publish, and at every save of a published document. |
+| `serverValidation` | Every time a document is saved, drafts included, and in the Admin's live validation while the editor types. |
+| `serverPublishValidation` | In addition to `serverValidation` when a document is published, and at every save in a collection without drafts, which is live at once. |
 
-A rule waits until each of its model's fields passed its own checks, so a field is never reported twice. A `serverPublishValidation` error shows when a publish is refused, as a field's publish schema does.
+A rule runs only after every field of the model has passed its own checks, so no field is reported twice. A `serverPublishValidation` error appears when publishing is refused, in the same way as an error from a field's publish schema.
 
 ### What a rule gets
 
-- **Every field of its model** by name, as a field's schema gets them:
+- **Every field of the model**, by name, in the same form as a field's schema gets them:
   - an empty value as `null`
-  - a date as its ISO text
-- **A block's rule** sees that block's fields only, never the document's or another block's.
-- **No data.** A rule runs synchronously, on the values alone. A check against other records belongs in a [`validate` hook](#your-own-rules-at-a-write).
+  - a date as ISO text
+- **A block's rule** sees only that block's fields, never the document's fields or another block's.
+- **No data.** A rule runs synchronously and sees only the values. A check against other records belongs in a [`validate` hook](#your-own-rules-at-a-write).
 
 ### Where the error lands
 
-- **At the field the issue's `path` names.** In the example, under "Button link", in the block, with the count on its tab.
-- **An issue with no field in its path** is the model's own error: on the block, or in the toast for a document's rule.
+- **At the field that the issue's `path` names.** In the example, the error shows under **Button link** in the block. The tab that holds the field shows the error count.
+- **An issue with no field in its path** is an error of the model itself. A block's rule shows it on the block, and a document's rule shows it in the toast.
 
-A field a rule requires keeps its `(Optional)` label, as its own schema lets it stay empty; the error says when it is needed.
+A field that a rule requires still shows **(Optional)** in its label, as the field's own schema lets it stay empty. The rule's error says when the field is needed.
 
 > [!TIP]
-> When a component hides or shows a field under the same condition a rule checks, keep the condition in one function of yours. Call it from both, as `isButtonWithoutLink` above.
+> When a component hides or shows a field under the same condition that a rule checks, keep the condition in one function. Call that function from both places, as the example does with `isButtonWithoutLink`.
 
 ### When the config refuses a rule
 
 - **The rule does not describe an object.**
-- **The rule names a key that is no field of the model.**
+- **The rule names a key that is not a field of the model.**
 
 ## Your own rules at a write
 
-A rule the config cannot hold - one that reads other records, or data the CMS does not know - goes into the `validate` hook of a write workflow. Its handler refuses the write by throwing:
+Some rules cannot live in the config, such as one that reads other records or data the plugin does not know. Such a rule goes into the `validate` hook of a write workflow. The handler you attach refuses the write by throwing an error:
 
 ```ts
 // src/workflows/hooks/cms-documents.ts
@@ -102,15 +102,15 @@ unpublishCmsDocumentWorkflow.hooks.validate(async ({ collection, document }, { c
 
 ### The write workflows
 
-| Workflow | Its handler runs at |
+| Workflow | The handler runs when |
 |---|---|
-| `createCmsDocumentWorkflow` | a create |
-| `updateCmsDocumentWorkflow` | a save, and a restore, with `input.change_type` being `"restore"` |
-| `publishCmsDocumentWorkflow` | a publish |
-| `unpublishCmsDocumentWorkflow` | an unpublish |
-| `deleteCmsDocumentWorkflow` | a delete |
+| `createCmsDocumentWorkflow` | a document is created |
+| `updateCmsDocumentWorkflow` | a document is saved, or a version is restored, with `input.change_type` set to `"restore"` |
+| `publishCmsDocumentWorkflow` | a document is published |
+| `unpublishCmsDocumentWorkflow` | a document is unpublished |
+| `deleteCmsDocumentWorkflow` | a document is deleted |
 
-A discard and the Admin's live validation run no handler.
+Discarding changes and the Admin's live validation run no handler.
 
 ### What the handler gets
 
@@ -122,23 +122,23 @@ A discard and the Admin's live validation run no handler.
 }
 ```
 
-- **Every collection.** A handler serves every collection, so it returns early for the ones it does not guard.
-- **A published document.** The stored row is the live content, not the draft.
-- **An unpublish.** The document comes without its areas.
+- **Every collection.** One handler serves every collection, so it returns early for the collections it does not guard.
+- **A published document.** For a published document, the stored row in `document` is the live content, not the draft.
+- **Unpublishing.** When a document is unpublished, `document` comes without its areas.
 
 ### When the handler runs
 
-- **Once per write**, after the plugin's own checks and before the first write. A refusal leaves nothing to undo and emits no event.
-- **In an update, before the body is checked.** `input.document` is what the editor sent.
-- **In the request.** Keep it to a check. A side effect after a write belongs in a subscriber to the `cms.document.*` events.
+- **Once per write**, after the plugin's own checks and before anything is written. When the handler refuses the write, there is nothing to undo, and the workflow emits no event.
+- **In an update, before the body is checked.** `input.document` holds what the editor sent.
+- **In the request.** Keep the handler to a check. Put a side effect that follows a write in a subscriber to the `cms.document.*` events.
 
 ### Refusing a write
 
-Throw a `MedusaError`, `NOT_ALLOWED` for a rule: the route answers `400` and the Admin shows its message in the toast. The message is yours, in your editors' language.
+To refuse a write, throw a `MedusaError`, with the type `NOT_ALLOWED` for a broken rule. The route answers `400`, and the Admin shows the error's message in the toast. You write the message, in your editors' language.
 
 ### One handler per hook
 
-Medusa takes one handler per hook, so combine your rules in it. A rule two writes share - a page in use, refused at an unpublish and at a delete - is one function of yours called from both, as above.
+Medusa takes one handler per hook, so combine your rules in that handler. When two writes share a rule, write the rule as one function and call it from both handlers. In the example above, `validatePageNotInUse` refuses both unpublishing and deleting a page that is in use.
 
 > [!WARNING]
-> The handler attaches to the workflow you import. Import it from `@mostrajs/cms/workflows`, resolved to the copy Medusa loads. A second copy of the package in `node_modules` takes the handler without an error, and the plugin's routes never run it.
+> The handler attaches to the workflow you import. Import the workflow from `@mostrajs/cms/workflows`, and make sure that import resolves to the copy Medusa loads. If `node_modules` holds a second copy of the package, that copy takes the handler without an error, and the plugin's routes never run it.
