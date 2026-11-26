@@ -38,17 +38,17 @@
     },
     "codee-medusa-plugin-delivery": {
       "source": "codee-sh/codee-skills",
-      "commit": "1c07705bcbcbd894ab9102474c7a4fbdf6c3424d",
+      "commit": "c28d605f7a850d6fed40ac29b036c2d6da08d0a1",
       "sourceType": "github",
       "skillPath": "frameworks/medusa/codee-medusa-plugin-delivery/SKILL.md",
-      "computedHash": "31ca065668c8ba906228cbfee23bec53eb1176398856f096271d34e94280a426"
+      "computedHash": "5588ea950bc6c802a4d34998912d1dce897d44530f2b1ec498206b02754a5e7b"
     },
     "codee-medusa-plugin-docs": {
       "source": "codee-sh/codee-skills",
-      "commit": "1c07705bcbcbd894ab9102474c7a4fbdf6c3424d",
+      "commit": "c28d605f7a850d6fed40ac29b036c2d6da08d0a1",
       "sourceType": "github",
       "skillPath": "frameworks/medusa/codee-medusa-plugin-docs/SKILL.md",
-      "computedHash": "143df797f2e67046aa71d3ee0d60d36fa2a7d99f4474c3fc19166255e5bf011b"
+      "computedHash": "3e4244fc1b3a87db2ccbd8d41b3c76f2258f60552c18c5aad8ecbf13b22b81ee"
     },
     "codee-medusa-scripts": {
       "source": "codee-sh/codee-skills",
