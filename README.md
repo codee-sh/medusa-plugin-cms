@@ -14,6 +14,7 @@ Your content lives in the same project as your store - its database, its Admin, 
 - Singletons for one-of-a-kind content such as site settings
 - Blocks in areas, ordered and nested, for page builders and repeated content
 - Fields: text, number, boolean, date, select, combobox, text list, slug, URL, rich text, media and relationships between collections
+- Rich text edited with [Lexical](https://lexical.dev) and stored as its JSON document, with the formatting each field allows
 - Media through Medusa's File Module, or a media provider of your own
 - Server-side validation with Zod schemas, mirrored in the Admin, and your own rules at every write
 - Admin extensions: your own field components, options loaded by a hook, widgets in the plugin's pages

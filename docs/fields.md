@@ -221,7 +221,7 @@ import { sanitizeUrl } from "@mostrajs/cms/shared"
 
 ## Rich text
 
-A `richtext` field is formatted text, edited in a rich text editor. It sits on a text column (`model.text()`, not `.searchable()`), which holds the editor's document as JSON; the Admin and the store API hand the document to you as an object. Nothing builds or stores HTML: your storefront renders the document's nodes.
+A `richtext` field is formatted text, edited in the Admin in an editor built on [Lexical](https://lexical.dev). It sits on a text column (`model.text()`, not `.searchable()`), which holds the editor's document, Lexical's editor state, as JSON; the Admin and the store API hand the document to you as an object. Lexical runs only in the Admin: the server checks a document against its field's features without it, and nothing builds or stores HTML, so your storefront renders the document's nodes, [below](#reading-rich-text-in-the-storefront).
 
 ```ts
 summary: { type: "richtext", label: "Summary" },
