@@ -4,9 +4,11 @@ How a document holds page-builder content - ordered lists of blocks in named are
 
 ## How it fits together
 
-An **area** is a named, ordered list of blocks: a page's `sections`, a grid's `items`. A **block** is a row of a block type, such as a hero or a grid, with fields of its own, and a block type may hold areas of its own, so blocks nest.
+- **An area** is a named, ordered list of blocks: a page's `sections`, a grid's `items`.
+- **A block** is a row of a block type, such as a hero or a grid, with fields of its own. A block type may hold areas of its own, so blocks nest.
+- **The area model** ties blocks to documents. Each block type is a model of your module, and the area model is one more.
 
-Each block type is a model of your module, and one more model, the **area model**, ties them to documents. It has a row for every area a document or a block holds, and each block row points at the area row it sits in, ordered by `rank`:
+The area model has a row for every area a document or a block holds. Each block row points at the area row it sits in, ordered by `rank`:
 
 ```text
 content_area
@@ -20,7 +22,13 @@ hero_1 | a1      | 0                grid_1 | a1      | 1
 hero_2 | a2      | 0
 ```
 
-Every area row points at its document, at any depth, through the owner column (`page_id`); `parent_id` is the block it sits in, `null` for the document's own areas. The config does not name the area model: the plugin finds it as the target of each collection's `areas` relation and each block's `area` relation, and refuses a config whose relations point at two models.
+Every area row has two columns that place it:
+
+- **`page_id`**, the owner column, points at its document, at any depth.
+- **`parent_id`** is the block it sits in, `null` for the document's own areas.
+
+> [!NOTE]
+> The config does not name the area model. The plugin finds it as the target of each collection's `areas` relation and each block's `area` relation. It refuses a config whose relations point at two models.
 
 ## The area model
 
@@ -64,6 +72,8 @@ export const ContentArea = model
   ])
 ```
 
+### What the plugin checks
+
 What the plugin checks at start, and what each part is for:
 
 | Part | Why |
@@ -74,7 +84,15 @@ What the plugin checks at start, and what each part is for:
 | A check naming each owner column | It keeps every area row tied to exactly one document. With several collections, it names all of them. |
 | A `hasMany` to each block type, in `.cascades()` | A read follows it to the blocks, and deleting an area row deletes its blocks. Its name is yours. |
 
-The two unique indexes are not checked by the plugin, but keep the data sound: a document holds one row per area name, and a block one row per area of its own. Keep `parent_id IS NULL` in the owner's index, since a block's area rows carry the document's id too and would collide with the document's own areas without it.
+### The unique indexes
+
+The plugin does not check the two unique indexes, but they keep the data sound:
+
+- **`IDX_content_area_page_id_name_unique`** - a document holds one row per area name.
+- **`IDX_content_area_parent_id_name_unique`** - a block holds one row per area of its own.
+
+> [!WARNING]
+> Keep `parent_id IS NULL` in the owner's index. A block's area rows carry the document's id too, and without it they would collide with the document's own areas.
 
 ## A collection with areas
 
@@ -99,9 +117,12 @@ export const ContentPage = model
   .cascades({ delete: ["areas"] })
 ```
 
-The collection's config names its areas under `areas`, each with a `label` and the `blocks` it takes, and places each area in one of its `admin.sections`, after the section's fields:
+### The collection's config
+
+The collection's config names its areas under `areas`, each with a `label` and the `blocks` it takes. Each area is placed in one of its `admin.sections`, after the section's fields:
 
 ```ts
+// src/cms/config.ts, in collections
 {
   slug: "page",
   model: ContentPage,
@@ -124,22 +145,31 @@ The collection's config names its areas under `areas`, each with a `label` and t
 }
 ```
 
-An area takes these keys:
+The section layout itself is in [The Admin](./admin.md#a-collections-form-sections).
 
-| Key | What it does |
-|---|---|
-| `label` | The area's heading in the Admin; a text or a translation. |
-| `blocks` | The slugs of the block types the area takes, each one of the config's `blocks`. |
-| `minRows` | The fewest blocks a publish takes, with `Add at least <n> blocks`. |
-| `maxRows` | The most blocks a publish takes, with `Keep at most <n> blocks`. |
+### An area's keys
 
-`minRows` and `maxRows` are checked at a publish, so a draft may hold fewer or more; in a collection without drafts every save is a publish. The section layout itself is in [The Admin](./admin.md#a-collections-form-sections).
+An area, typed as `AreaConfig`, takes these keys:
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `label` | `CmsText` | required | The area's heading in the Admin; a text or a translation. |
+| `blocks` | `string[]` | required | The slugs of the block types the area takes, each one of the config's `blocks`. |
+| `minRows` | `number` | - | The fewest blocks a publish takes; fewer fails with `Add at least <n> blocks`. |
+| `maxRows` | `number` | - | The most blocks a publish takes; more fails with `Keep at most <n> blocks`. |
+
+`minRows` and `maxRows` are checked at a publish, so a draft may hold fewer or more. In a collection without drafts, every save is a publish.
 
 ### Areas on a second collection
 
-The area model holds the areas of every collection. A second collection with areas adds its own nullable `belongsTo` on the area model, its owner column to the check, and an index of its own:
+The area model holds the areas of every collection. A second collection with areas adds three things to the area model:
+
+- its own nullable `belongsTo`;
+- its owner column in the check;
+- an index of its own.
 
 ```ts
+// src/modules/content/models/content-area.ts
 post: model.belongsTo(() => ContentPost, { mappedBy: "areas" }).nullable(),
 // ...
 .checks([
@@ -158,7 +188,11 @@ post: model.belongsTo(() => ContentPost, { mappedBy: "areas" }).nullable(),
 
 ## Block types
 
-A block type is a model of your module with three things the plugin needs: an id with a prefix of its own, a `belongsTo` named exactly `area` to the area model, whose column is `area_id`, and a `rank` number column, the block's position in its area, which the plugin writes:
+A block type is a model of your module with three things the plugin needs:
+
+- **An id** with a prefix of its own.
+- **A `belongsTo` named exactly `area`** to the area model, whose column is `area_id`.
+- **A `rank` number column**, the block's position in its area, which the plugin writes.
 
 ```ts
 // src/modules/content/models/content-hero.ts
@@ -182,11 +216,18 @@ export const ContentHero = model
   ])
 ```
 
-`ContentGrid` and `ContentGridItem` are written the same way, each with its own prefix (`cntgrid`, `cntgitem`), its content columns, `area` and `rank`. The index on `area_id` and `rank` is yours to add, for the reads that order an area's blocks. The area model needs a `hasMany` to the block type, in its `.cascades()`, and your module's service holds the model like any other.
+`ContentGrid` and `ContentGridItem` are written the same way. Each has its own prefix (`cntgrid`, `cntgitem`), its content columns, `area` and `rank`.
+
+- **The index on `area_id` and `rank`** is yours to add, for the reads that order an area's blocks.
+- **The area model** needs a `hasMany` to the block type, in its `.cascades()`.
+- **Your module's service** holds the model like any other.
+
+### A block type's config
 
 The config lists each block type under `blocks`, at its root:
 
 ```ts
+// src/cms/config.ts, at the config's root
 blocks: [
   {
     slug: "hero",
@@ -200,15 +241,27 @@ blocks: [
 ],
 ```
 
-A block's `slug` is its `block_type`, the name the Admin and the store API know it by. Its `fields` are configured as a collection's are, and its content columns are nullable for the same reason: a block is added before its fields are filled. A block holds no `relationship` field, as a relation points from a document.
+A block type, typed as `BlockConfig`, takes these keys of its own:
 
-A block's card in the Admin may divide its fields into `admin.sections`, each with a `label` and the `fields` it shows; a field in no section shows before them, so a small block needs none. A block's section takes no `key`, `position` or `areas`.
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `slug` | `string` | required | The block's `block_type`, the name the Admin and the store API know it by. |
+| `fields` | `Record<string, FieldConfig>` | - | The block's fields, configured as a collection's are. |
+| `admin.sections` | `LayoutBlockSectionConfig[]` | - | The sections of the block's card in the Admin; see [Sections of a block's card](#sections-of-a-blocks-card). |
+| `areas` | `Record<string, AreaConfig>` | - | The block's own areas; see [Areas inside a block](#areas-inside-a-block). |
+
+A block's content columns are nullable for the same reason as a collection's: a block is added before its fields are filled. A block holds no `relationship` field, as a relation points from a document.
+
+### Sections of a block's card
+
+A block's card in the Admin may divide its fields into `admin.sections`, each with a `label` and the `fields` it shows. A field in no section shows before them, so a small block needs none. A block's section takes no `key`, `position` or `areas`.
 
 ## Areas inside a block
 
 A block type holds areas of its own through `areas` in its config, with the keys a collection's area takes:
 
 ```ts
+// src/cms/config.ts, in blocks
 {
   slug: "grid",
   model: ContentGrid,
@@ -232,11 +285,23 @@ A block type holds areas of its own through `areas` in its config, with the keys
 },
 ```
 
-The block's model gets no relation for them: each is an area row whose `parent_id` is the block's id, so the model stays as it is. Add the unique index on `parent_id` and `name` to the area model once, as in the example above. Do not add a relation from a block to its area rows: the area model already cascades to the block, and a cascade back would make a loop, and Medusa refuses every soft delete of models that cascade in a loop.
+The block's model gets no relation for them. Each is an area row whose `parent_id` is the block's id, so the model stays as it is. Add the unique index on `parent_id` and `name` to the area model once, as in [The area model](#the-area-model).
 
-A block type may take itself, directly or through another type, as a grid in a grid item. `maxDepth`, at the config's root, bounds how deep areas nest, `4` when left out: a document's own areas are the first level, the areas of a block in them the second, and so on. A block at the last level shows no areas in the Admin, a save refuses blocks past it with `Blocks cannot be nested this deep`, and the store API reads no deeper.
+> [!WARNING]
+> Do not add a relation from a block to its area rows. The area model already cascades to the block, so a cascade back would make a loop. Medusa refuses every soft delete of models that cascade in a loop.
+
+### How deep areas nest
+
+A block type may take itself, directly or through another type, as a grid in a grid item. `maxDepth`, at the config's root, bounds how deep areas nest:
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `maxDepth` | `number` | `4` | How many levels of areas a document can nest. |
+
+A document's own areas are the first level, the areas of a block in them the second, and so on.
 
 ```ts
+// src/cms/config.ts
 export const cmsConfig = defineConfig({
   module: "content",
   collections: [/* ... */],
@@ -245,46 +310,122 @@ export const cmsConfig = defineConfig({
 })
 ```
 
-## Names, and what the start refuses
+At the last level:
 
-Each relation the plugin follows has a fixed name: a collection's `areas` and a block's `area`. The area model's relations are named as you like. The start stops, with a message naming the model or the config entry at fault, on:
+- a block shows no areas in the Admin;
+- a save refuses blocks past it with `Blocks cannot be nested this deep`;
+- the store API reads no deeper.
+
+## What the start checks
+
+Each relation the plugin follows has a fixed name: a collection's `areas` and a block's `area`. The area model's relations are named as you like.
+
+### When the start fails
+
+The start stops, with a message naming the model or the config entry at fault, on:
 
 - a collection with `areas` whose model has no `areas` hasMany, or does not cascade its delete to it;
 - a block type whose model has no `area` belongsTo, or no `rank` number column;
-- an area model without a text `name` or a nullable text `parent_id`, without a nullable `belongsTo` to each collection with areas, without a check naming each owner column, or without a cascading `hasMany` to each block type;
-- an area named after a column of what holds it, as the store API returns areas beside the columns, or named `areas`;
+- an area model without a text `name`, or without a nullable text `parent_id`;
+- an area model without a nullable `belongsTo` to each collection with areas;
+- an area model without a check naming each owner column;
+- an area model without a cascading `hasMany` to each block type;
+- an area named after a column of what holds it, as the store API returns areas beside the columns;
+- an area named `areas`;
 - an area naming a block type the config does not have;
 - a block's areas written under `repeaters`, their earlier key: `"repeaters" is now "areas"`;
 - a singleton, or a collection edited in a drawer, with areas: their saves have no blocks.
 
 ## Deleting
 
-Deleting a document soft-deletes its row, and the cascades carry it through: the collection's `areas` to every area row of the document, nested ones included, as each carries the owner column, and the area model's `hasMany` relations to every block in them. A block removed in a save is soft-deleted by the plugin with everything it held, its area rows and their blocks at any depth, since no cascade leads from a block to its areas.
+Deleting a document soft-deletes its row, and the cascades carry it through:
+
+- **The collection's `areas`** carry it to every area row of the document, nested ones included, as each carries the owner column.
+- **The area model's `hasMany` relations** carry it to every block in them.
+
+A block removed in a save is soft-deleted by the plugin with everything it held: its area rows and their blocks, at any depth. The plugin does this itself, since no cascade leads from a block to its areas.
 
 ## In the Admin
 
-A document's areas are edited on its page, in the sections that name them; the create form holds its fields only, so a new document gets its blocks once it is created. Each area shows its label and its blocks as cards, in order, or `No blocks yet`:
+A document's areas are edited on its page, in the sections that name them. The create form holds its fields only, so a new document gets its blocks once it is created.
+
+### The block cards
+
+Each area shows its label and its blocks as cards, in order, or `No blocks yet`:
 
 - **Add block** appends a block: of the area's one type at once, or of the type picked from a menu when the area takes several. A new block opens with its fields empty and its areas empty.
 - **Move up** and **Move down**, in a card's menu, reorder the blocks; the order is the `rank` a save writes.
 - **Remove**, in a card's menu, takes the block out with everything it holds, when the document is saved.
-- **Show fields** and **Hide fields** open and close a card. Its header shows the block type and the value of its first text field, so a closed card still says which it is. A card opens by itself for a new block and for one a save refused.
+- **Show fields** and **Hide fields** open and close a card.
 
-An open card draws the block's fields in no section, then its sections, then each of its areas under its label, as cards of their own. Nothing is written until the document is saved: a save sends each area the editor changed, and an area left as it opened is kept as stored. In a collection with drafts, a published document's block changes wait in its draft version, and reach the rows the store API serves when it is published.
+A card's header shows the block type and the value of its first text field, so a closed card still says which it is. A card opens by itself for a new block and for one a save refused.
+
+An open card draws, in order:
+
+1. the block's fields in no section;
+2. its sections;
+3. each of its areas under its label, as cards of their own.
+
+### Saving the blocks
+
+Nothing is written until the document is saved. A save sends each area the editor changed; an area left as it opened is kept as stored.
+
+In a collection with drafts, a published document's block changes wait in its draft version. They reach the rows the store API serves when it is published.
+
+### A block type its area no longer takes
 
 A block whose type its area no longer takes, as the config changed, stays in place with `This block type is no longer allowed here. You can only remove it.` Nothing disappears unless the editor removes it; the store API leaves such a block out.
 
 ## In the store API
 
-The store API serves a published document's areas as the rows hold them: each area under its name, as a list of its blocks in their `rank` order, each block with its `id`, its `block_type`, its public fields and its own areas under their names, down to `maxDepth`. `rank`, `area_id` and the area rows stay out of the answer, and so does a block of a type its area no longer takes. A single document answers its areas by default; a list answers them only when `fields` names one. [Store API](./store-api.md#choosing-fields) shows a document with areas, and how `fields` selects an area, a block type or one field of it, such as `sections.grid.items.grid_item.label`.
+The store API serves a published document's areas as the rows hold them. Each area comes under its name, as a list of its blocks in their `rank` order. Each block holds:
+
+- its `id` and its `block_type`;
+- its public fields;
+- its own areas under their names, down to `maxDepth`.
+
+The answer leaves out:
+
+- `rank`, `area_id` and the area rows;
+- a block of a type its area no longer takes.
+
+A single document answers its areas by default; a list answers them only when `fields` names one. [Store API](./store-api.md#choosing-fields) shows a document with areas. It also shows how `fields` selects an area, a block type or one field of it, such as `sections.grid.items.grid_item.label`.
 
 ## Writing areas from your own code
 
-A save through the Admin API or the [workflows](./workflows.md) carries each area under its name as a list of blocks, `{ id?, block_type, ...fields, ...areas }`, in their order. The plugin compares ids, never values:
+A save through the Admin API or the [workflows](./workflows.md) carries each area under its name as a list of blocks, in their order. Each block has this shape:
 
-- a block with the id of a stored block of the document is updated, at any depth, and may move to another area of the same document;
-- a block without a known id is created, with an id from its model's prefix;
-- a stored block the area no longer carries is deleted, with everything it held;
-- an area the body leaves out is kept as stored; an area the body holds is replaced whole.
+```ts
+{
+  id?: string
+  block_type: string
+  // ...its fields, by name
+  // ...its own areas, by name, each a list of blocks
+}
+```
 
-A block of a type its area no longer takes passes only as `{ id, block_type }` with the id it has in that area, which keeps it in place.
+For the page above, a save's document may hold:
+
+```json
+{
+  "title": "About us",
+  "sections": [
+    { "id": "cnthero_01JD8Q5B", "block_type": "hero", "title": "Who we are" },
+    {
+      "block_type": "grid",
+      "title": "Numbers",
+      "items": [{ "block_type": "grid_item", "label": "Founded", "value": "1998" }]
+    }
+  ]
+}
+```
+
+The plugin compares ids, never values:
+
+- **A block with the id of a stored block** of the document is updated, at any depth. It may move to another area of the same document.
+- **A block without a known id** is created, with an id from its model's prefix.
+- **A stored block the area no longer carries** is deleted, with everything it held.
+- **An area the body leaves out** is kept as stored; an area the body holds is replaced whole.
+
+> [!NOTE]
+> A block of a type its area no longer takes passes only as `{ id, block_type }`, with the id it has in that area. That keeps it in place.

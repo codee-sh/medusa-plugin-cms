@@ -1,6 +1,10 @@
 # Fields
 
-What a field's config holds, every type of field and its options, relationships, rich text, and how text and links are kept safe. Rules over several fields are in [Validation](./validation.md), an input of your own is in [Field components](./field-components.md), and media fields and their providers are in [Media](./media.md).
+What a field's config holds, every type of field and its options, relationships, rich text, and how text and links are kept safe. Other pages hold the rest:
+
+- Rules over several fields are in [Validation](./validation.md).
+- An input of your own is in [Field components](./field-components.md).
+- Media fields and their providers are in [Media](./media.md).
 
 ## Field types at a glance
 
@@ -26,19 +30,10 @@ A `textarea` is a text field drawn in several lines; everything said about text 
 
 ## A field's config
 
-A model's `fields` in the CMS config are its form. Every key of a field belongs to one group, and its place says where it works:
-
-| Group | Keys | Where it works |
-|---|---|---|
-| Data rules, at the top | `type`, `label`, `options`, `from`, `multiple`, `max`, `stores`, `linkPolicy`, `features`, `relationTo` | The server enforces them on every save; the Admin mirrors them for the editor. |
-| Server functions, named `server*` | `serverValidation` and `serverPublishValidation` (Zod schemas), `serverTransform` (a slug's) | The server only. The Admin marks a field the schemas require and shows their messages while the editor types. |
-| Admin code, named | `options: { hook }`, and a layout node `{ type: "component" }` | Your own Admin; the server checks the value's type only. |
-| Editor hints, under `admin` | `description`, `recommendedLength`, `placeholderFrom`, `lockOnEdit`, `mimeTypes` | The Admin only; nothing here changes what a save accepts. |
-| Store API, under `store` | `hidden`, `filterable` | What the field does in the store API, see [Store API](./store-api.md#a-fields-store-config). |
-
-A media field's `admin.mimeTypes` - exact types or `type/*`, JPG, PNG and WebP when left out - is what its picker offers and takes. The rule the server holds is the media provider's: `FileMediaProvider` takes `mimeTypes` in its options and refuses an upload of any other type, and takes any type without them. The rest of a media field, `stores` and the providers, is in [Media](./media.md).
+A model's `fields` in the CMS config are its form:
 
 ```ts
+// src/cms/config.ts, in a collection's or a block's fields
 seo_title: {
   type: "text",
   label: "SEO title",
@@ -48,18 +43,56 @@ seo_title: {
 },
 ```
 
-The schemas also say whether a field must be filled. `serverValidation` runs at every save, a draft's included; `serverPublishValidation` runs besides it at a publish only. A schema gets the field's value, already checked against the field's type - a date as its ISO text - or `null` when the field is empty, so one that refuses `null` makes the field required: `z.string()` above makes the SEO title required to publish, and `.nullish()` lets a draft leave it empty. A format rule without `.nullish()` makes its field required at every save, which the Admin shows by dropping `(Optional)` from the label. A field with no schema may stay empty, and a column the database requires needs a `serverValidation` that refuses `null`. Every kind of field takes them: `z.string()` for a select, a single combobox or media and a date, `z.array(z.string())` for a list, `z.boolean()`, `z.number()`.
+Every key of a field belongs to one group, and its place says where it works:
+
+| Group | Keys | Where it works |
+|---|---|---|
+| Data rules, at the top | `type`, `label`, `options`, `from`, `multiple`, `max`, `stores`, `linkPolicy`, `features`, `relationTo` | The server enforces them on every save; the Admin mirrors them for the editor. |
+| Server functions, named `server*` | `serverValidation` and `serverPublishValidation` (Zod schemas), `serverTransform` (a slug's) | The server only. The Admin marks a field the schemas require and shows their messages while the editor types. |
+| Admin code, named | `options: { hook }`, and a layout node `{ type: "component" }` | Your own Admin; the server checks the value's type only. |
+| Editor hints, under `admin` | `description`, `recommendedLength`, `placeholderFrom`, `lockOnEdit`, `mimeTypes` | The Admin only; nothing here changes what a save accepts. |
+| Store API, under `store` | `hidden`, `filterable` | What the field does in the store API, see [Store API](./store-api.md#a-fields-store-config). |
 
 A rule the Admin must act on, such as a limit it enforces in the input, is a data rule (`max`). A rule a message is enough for is a schema.
 
+### Required fields
+
+The schemas also say whether a field must be filled:
+
+- **`serverValidation`** runs at every save, a draft's included.
+- **`serverPublishValidation`** runs besides it, at a publish only.
+
+A schema gets the field's value, already checked against the field's type - a date as its ISO text. It gets `null` when the field is empty, so a schema that refuses `null` makes the field required. In the example above:
+
+- `z.string()` makes the SEO title required to publish.
+- `.nullish()` lets a draft leave it empty.
+
+A format rule without `.nullish()` makes its field required at every save. The Admin shows it by dropping `(Optional)` from the label.
+
+A field with no schema may stay empty. A column the database requires needs a `serverValidation` that refuses `null`.
+
+Every kind of field takes the schemas:
+
+| Field | Schema |
+|---|---|
+| a select, a single combobox or media, a date | `z.string()` |
+| a list | `z.array(z.string())` |
+| a boolean | `z.boolean()` |
+| a number | `z.number()` |
+
+### The types a media field takes
+
+- **`admin.mimeTypes`** is what a media field's picker offers and takes: exact types or `type/*`. When left out, JPG, PNG and WebP.
+- **The rule the server holds** is the media provider's. `FileMediaProvider` takes `mimeTypes` in its options and refuses an upload of any other type. Without them it takes any type.
+
+The rest of a media field, `stores` and the providers, is in [Media](./media.md).
+
 ## Fields that pick from options
 
-| Type | Column | Options | In the Admin |
-|---|---|---|---|
-| `select` | text, enum | a list in the config | a dropdown, for a few options |
-| `combobox` | text or enum; array with `multiple: true` | a list in the config, or a hook | searched as the editor types, a page at a time; chips with `multiple`, no more than `max` |
+A `select` and a `combobox` let the editor pick a value from a list of options:
 
 ```ts
+// src/cms/config.ts, in a collection's or a block's fields
 image_position: {
   type: "select",
   label: "Image position",
@@ -77,9 +110,16 @@ product_ids: {
 },
 ```
 
+| Type | Column | Options | In the Admin |
+|---|---|---|---|
+| `select` | text, enum | a list in the config | a dropdown, for a few options |
+| `combobox` | text or enum; array with `multiple: true` | a list in the config, or a hook | searched as the editor types, a page at a time; chips with `multiple`, no more than `max` |
+
 ### Options from a hook
 
-The config reaches the Admin as JSON, so it cannot hold a function. `options: { hook: "products" }` names a React hook that you register in your own Admin. The hook fetches the options in the browser, from any source: Medusa's API, your own routes, a constant. The plugin ships no hook and adds no route for options.
+The config reaches the Admin as JSON, so it cannot hold a function. `options: { hook: "products" }` names a React hook that you register in your own Admin.
+
+The hook fetches the options in the browser, from any source: Medusa's API, your own routes, a constant. The plugin ships no hook and adds no route for options.
 
 1. Register the hook in a file of your own:
 
@@ -116,7 +156,9 @@ The config reaches the Admin as JSON, so it cannot hold a function. `options: { 
      })
    ```
 
-The hook's contract, for a hook that does not use `useComboboxData`:
+### The hook's contract
+
+A hook that does not use `useComboboxData` returns this shape, exported from `@mostrajs/cms/admin-extensions` as `CmsOptionsHook`:
 
 ```ts
 type CmsOptionsHook = (input: {
@@ -135,16 +177,59 @@ type CmsOptionsHook = (input: {
 }
 ```
 
-What to know:
+### Storing another key than the id
 
-- **The mapping is yours.** To store a handle instead of an id, register a second hook under another name (`product-handles`) that maps `value: product.handle`, and pass `defaultValueKey: "handle"` to `useComboboxData`, so that it finds the stored product by its handle. Its type knows `id` only, so give it a params type with `handle`: `useComboboxData<HttpTypes.AdminProductListResponse, { handle?: string; q?: string; offset?: number; limit?: number }>`. A small factory of your own, taking the fields to fetch and a function from a record to an option, keeps several such hooks short.
-- **The server does not see the hook's source.** It checks a hook's value as a text, or a list of texts no longer than `max`; it does not check that the product exists. The store API returns the stored ids, and the storefront fetches the records itself, in the stored order.
-- **A name no one registered** disables its field with `Options unavailable: no source named "<name>" is registered`. A hook that reports `isError`, or throws, disables its field with `Could not load the options`. Either way the field shows what it holds, and the rest of the form saves.
+The mapping is yours. To store a handle instead of an id, register a second hook under another name (`product-handles`) that maps `value: product.handle`.
+
+Pass `defaultValueKey: "handle"` to `useComboboxData`, so that it finds the stored product by its handle. Its type knows `id` only, so give it a params type with `handle`:
+
+```ts
+// src/admin/cms/use-product-handle-options.ts
+import type { HttpTypes } from "@medusajs/framework/types"
+import type { CmsOptionsHookInput } from "@mostrajs/cms/admin-extensions"
+import { useComboboxData } from "@medusajs/dashboard/hooks"
+import { sdk } from "../lib/client"
+
+export const useProductHandleOptions = ({ value }: CmsOptionsHookInput) =>
+  useComboboxData<
+    HttpTypes.AdminProductListResponse,
+    { handle?: string; q?: string; offset?: number; limit?: number }
+  >({
+    queryKey: ["cms-options", "product-handles"],
+    queryFn: (params) => sdk.admin.product.list({ ...params, fields: "id,title,handle" }),
+    getOptions: (data) =>
+      data.products.map((product) => ({ value: product.handle, label: product.title })),
+    defaultValueKey: "handle",
+    defaultValue: value ?? undefined,
+  })
+
+// src/admin/cms/cms-extensions.ts
+// ...
+defineCmsOptionsHook("product-handles", useProductHandleOptions)
+```
+
+A small factory of your own, taking the fields to fetch and a function from a record to an option, keeps several such hooks short.
+
+### What the server checks
+
+The server does not see the hook's source. It checks a hook's value as a text, or a list of texts no longer than `max`; it does not check that the product exists.
+
+The store API returns the stored ids, and the storefront fetches the records itself, in the stored order.
+
+### When the options fall short
+
+- **A name no one registered** disables its field with `Options unavailable: no source named "<name>" is registered`.
+- **A hook that reports `isError`, or throws,** disables its field with `Could not load the options`.
 - **A stored value the options lack**, such as a deleted product, shows as its raw value and can be removed.
+
+In the first two cases the field shows what it holds, and the rest of the form saves.
 
 ## Relationships
 
-A `relationship` field points at a document of another collection of your config, or of its own. It sits on the foreign key of a `belongsTo` in your model, so the field's key is that column, `<relation>_id`, and `relationTo` names the collection the relation's target model is registered under:
+A `relationship` field points at a document of another collection of your config, or of its own. It sits on the foreign key of a `belongsTo` in your model:
+
+- The field's key is that column, `<relation>_id`.
+- `relationTo` names the collection the relation's target model is registered under.
 
 ```ts
 // src/modules/content/models/page-settings.ts
@@ -170,18 +255,77 @@ fields: {
 },
 ```
 
-The start fails on a relationship that sits on no `belongsTo`'s foreign key, has no `relationTo`, names a block or a slug that is no collection, or names a collection whose model is not the relation's target. It also fails on another type of field on a foreign key, on a `belongsTo` the model requires with no relationship field, as no write could fill it, and on a relationship field in a block. How a model declares its relations is in [Models](./models.md#relations-between-collections).
+How a model declares its relations is in [Models](./models.md#relations-between-collections).
 
-- **What it holds.** The target's id, or `null` when the relation is nullable and the field is empty; an empty text is refused. A field holds one document.
-- **What a write checks.** A create, a save, a publish, a restore and the Admin's live validation refuse an id that names no live document of `relationTo`, at the field. A draft of the target is a live document, so it may be picked. To allow published targets only, list only those in your hook and refuse a draft in a [`validate` hook](./validation.md#your-own-rules-at-a-write).
-- **How the Admin picks.** With `options: { hook }` the field is drawn as that hook's combobox, as [above](#options-from-a-hook): register a hook that lists the target's documents, from your own route or the plugin's `GET /admin/cms/collections/<slug>/documents`, which takes `q`, `status`, `limit` and `offset`. Without a hook the field is a text input of the id. Either way the server checks the value as a relation.
-- **How the Admin shows it.** A read-only view and a table column show the target's title, its `useAsTitle` field, or its id without one; an id that names no document any more shows as `<id> (not found)`.
-- **When the target is deleted or unpublished.** The plugin refuses neither for a reference, and leaves the key as it is: a delete is a soft delete, so the database's foreign key rule never runs. The next write that holds the id is refused at the field until it is changed. To keep a document in use from going away, refuse its delete and unpublish in a `validate` hook, reading what points at it with `listCmsReferencesWorkflow` from `@mostrajs/cms/workflows`, or the Admin route `GET /admin/cms/collections/:collection/documents/:id/references`. Both answer the live rows that point at the document, of any collection, the document itself left out: `{ references: [{ collection, field, id }] }` from the route.
-- **What the store API returns.** The id, as stored, under the field's key. The storefront reads the target from its own collection's store route, which serves published documents only, and treats one it cannot read as missing.
+### When the start refuses a relationship
+
+The start fails on:
+
+- a relationship that sits on no `belongsTo`'s foreign key;
+- a relationship with no `relationTo`;
+- a `relationTo` that names a block or a slug that is no collection;
+- a `relationTo` that names a collection whose model is not the relation's target;
+- another type of field on a foreign key;
+- a `belongsTo` the model requires with no relationship field, as no write could fill it;
+- a relationship field in a block.
+
+### What it holds and what a write checks
+
+The field holds the target's id, or `null` when the relation is nullable and the field is empty; an empty text is refused. A field holds one document.
+
+These refuse an id that names no live document of `relationTo`, at the field:
+
+- a create;
+- a save;
+- a publish;
+- a restore;
+- the Admin's live validation.
+
+A draft of the target is a live document, so it may be picked. To allow published targets only, list only those in your hook and refuse a draft in a [`validate` hook](./validation.md#your-own-rules-at-a-write).
+
+### In the Admin
+
+- **How it picks.** With `options: { hook }` the field is drawn as that hook's combobox, as [above](#options-from-a-hook). Register a hook that lists the target's documents, from your own route or the plugin's `GET /admin/cms/collections/<slug>/documents`, which takes `q`, `status`, `limit` and `offset`.
+- **Without a hook** the field is a text input of the id. Either way the server checks the value as a relation.
+- **How it shows the target.** A read-only view and a table column show the target's title: its `useAsTitle` field, or its id without one. An id that names no document any more shows as `<id> (not found)`.
+
+### When the target is deleted or unpublished
+
+The plugin refuses neither for a reference, and leaves the key as it is: a delete is a soft delete, so the database's foreign key rule never runs. The next write that holds the id is refused at the field until it is changed.
+
+To keep a document in use from going away, refuse its delete and unpublish in a `validate` hook. Read what points at it with either of these:
+
+- **`listCmsReferencesWorkflow`** from `@mostrajs/cms/workflows`;
+- **the Admin route** `GET /admin/cms/collections/:collection/documents/:id/references`.
+
+Both answer the live rows that point at the document, of any collection, the document itself left out. The route answers:
+
+```json
+{
+  "references": [{ "collection": "page_settings", "field": "homepage_id", "id": "pgset_01..." }]
+}
+```
+
+### What the store API returns
+
+It returns the id, as stored, under the field's key. The storefront reads the target from its own collection's store route, which serves published documents only, and treats one it cannot read as missing.
 
 ## Text, links and safe output
 
-Every text value a save takes - a text, a textarea, a list item, a media value, a combobox value from a hook, the text in a rich text document - is refused at its field when it holds a control character (`U+0000` to `U+001F`, `U+007F`); a textarea and a rich text document keep their tabs and line breaks. Nothing else is changed: no trimming, and no HTML removed, as `a < b` is content. Escape text where you show it - React does - and never write it as HTML.
+Every text value a save takes is refused at its field when it holds a control character (`U+0000` to `U+001F`, `U+007F`). That covers:
+
+- a text and a textarea;
+- a list item;
+- a media value;
+- a combobox value from a hook;
+- the text in a rich text document.
+
+A textarea and a rich text document keep their tabs and line breaks. Nothing else is changed: no trimming, and no HTML removed, as `a < b` is content.
+
+> [!WARNING]
+> Escape text where you show it - React does - and never write it as HTML.
+
+### Links in a url field
 
 A link belongs in a `url` field, on a text column:
 
@@ -207,9 +351,36 @@ export const cmsConfig = defineConfig({
 })
 ```
 
-A relative link starts with `/`, `#` or `?`. A link with a space, a backslash or a control character, `//host`, and any scheme the policy does not list are refused at the field, `javascript:`, `data:` and `vbscript:` always, as no policy may list them. A link already stored is returned as it is, and its next save is refused until it is fixed. The config's `linkPolicy` is the `url` fields'; links in rich text follow their own, set on [the link feature](#links-in-rich-text).
+A link policy is a `LinkPolicy`, exported from `@mostrajs/cms/shared`:
 
-In the storefront, pass every stored link through `sanitizeUrl`, which answers `#` for one the policy refuses - a link saved before the policy narrowed, or written around the plugin. It checks against the default policy, or against the one you pass as its second argument:
+```ts
+type LinkPolicy = {
+  protocols: string[]
+  relative: boolean
+}
+```
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `linkPolicy` in the config | `Partial<LinkPolicy>` | `http`, `https`, `mailto`, `tel` and relative links | The links every `url` field takes, unless it sets its own. |
+| `linkPolicy` in a `url` field | `Partial<LinkPolicy>` | the config's | The field's own links, each key over the config's. |
+
+A relative link starts with `/`, `#` or `?`. The config's `linkPolicy` is the `url` fields'; links in rich text follow their own, set on [the link feature](#links-in-rich-text).
+
+### When a link is refused
+
+These are refused at the field:
+
+- a link with a space, a backslash or a control character;
+- `//host`;
+- any scheme the policy does not list;
+- `javascript:`, `data:` and `vbscript:`, always, as no policy may list them.
+
+A link already stored is returned as it is, and its next save is refused until it is fixed.
+
+### Links in the storefront
+
+In the storefront, pass every stored link through `sanitizeUrl`. It answers `#` for one the policy refuses - a link saved before the policy narrowed, or written around the plugin:
 
 ```tsx
 import { sanitizeUrl } from "@mostrajs/cms/shared"
@@ -217,15 +388,28 @@ import { sanitizeUrl } from "@mostrajs/cms/shared"
 <a href={sanitizeUrl(block.cta_href)}>{block.cta_label}</a>
 ```
 
-`./shared` loads in a browser: it imports nothing of Medusa. `validateUrl(url, policy)` answers `true` or the message, and `DEFAULT_LINK_POLICY` is the policy above.
+| Function | Returns | Description |
+|---|---|---|
+| `sanitizeUrl(url, policy?)` | the link, or `#` | Checks against the default policy, or against the one you pass as its second argument. |
+| `validateUrl(url, policy)` | `true` or the message | Checks a link against a policy. |
+| `DEFAULT_LINK_POLICY` | a `LinkPolicy` | The default policy, as in the config above. |
+
+> [!NOTE]
+> `./shared` loads in a browser: it imports nothing of Medusa.
 
 ## Rich text
 
-A `richtext` field is formatted text, edited in the Admin in an editor built on [Lexical](https://lexical.dev). It sits on a text column (`model.text()`, not `.searchable()`), which holds the editor's document, Lexical's editor state, as JSON; the Admin and the store API hand the document to you as an object. Lexical runs only in the Admin: the server checks a document against its field's features without it, and nothing builds or stores HTML, so your storefront renders the document's nodes, [below](#reading-rich-text-in-the-storefront).
+A `richtext` field is formatted text, edited in the Admin in an editor built on [Lexical](https://lexical.dev):
 
 ```ts
+// src/cms/config.ts, in a collection's or a block's fields
 summary: { type: "richtext", label: "Summary" },
 ```
+
+- **Its column** is a text column (`model.text()`, not `.searchable()`). It holds the editor's document, Lexical's editor state, as JSON.
+- **What you read.** The Admin and the store API hand the document to you as an object.
+- **Where Lexical runs.** In the Admin only. The server checks a document against its field's features without it.
+- **No HTML.** Nothing builds or stores HTML, so your storefront renders the document's nodes, [below](#reading-rich-text-in-the-storefront).
 
 A rich text field works in a collection and in a block. A table cannot show it as a column.
 
@@ -243,9 +427,24 @@ What the editor offers, and what a save accepts, is the field's features. Each o
 | `BlockquoteFeature()` | `blockquote` | quotes |
 | `LinkFeature({ linkPolicy })` | `link` | links whose URL the policy allows |
 
-Paragraphs, text and line breaks need no feature. A field without its own `features` takes the config's `richText.features`, and without those the built-in ones, `DEFAULT_RICH_TEXT_FEATURES` from `/shared`: every feature, headings `h2` to `h4`, and links by the default link policy.
+Paragraphs, text and line breaks need no feature.
 
-`richText.features` sets them for every rich text field of the config, and a field's `features` sets its own. Each is a list, which replaces what it falls back to, or a function run once at start. The config's function gets `defaultFeatures`, the built-in ones; a field's gets `defaultFeatures` and `rootFeatures`, the config's. Of two features with one key, the last wins:
+### Where a field's features come from
+
+A field takes the first of these that is set:
+
+1. the field's own `features`;
+2. the config's `richText.features`;
+3. the built-in ones, `DEFAULT_RICH_TEXT_FEATURES` from `/shared`: every feature, headings `h2` to `h4`, and links by the default link policy.
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `richText.features` in the config | `RichTextFeature[]`, or a function of `{ defaultFeatures }` | the built-in features | The features of every rich text field of the config. |
+| `features` in a field | `RichTextFeature[]`, or a function of `{ defaultFeatures, rootFeatures }` | the config's `richText.features` | The field's own features. |
+
+- **A list** replaces what it falls back to.
+- **A function** is run once at start. `defaultFeatures` are the built-in ones, and `rootFeatures` the config's.
+- **Of two features with one key**, the last wins.
 
 ```ts
 // src/cms/config.ts
@@ -288,15 +487,29 @@ body: {
 },
 ```
 
-The start fails on a feature that is not one of the plugin's, on props that are not an object, on `enabledHeadingSizes` that is not a list of `h1` to `h6`, and on a link policy that cannot be used.
+### When the start refuses the features
+
+The start fails on:
+
+- a feature that is not one of the plugin's;
+- props that are not an object;
+- `enabledHeadingSizes` that is not a list of `h1` to `h6`;
+- a link policy that cannot be used.
 
 ### Links in rich text
 
-A link in rich text follows its link feature's `linkPolicy`, not the config's `linkPolicy`, which is the `url` fields'. Each key of the feature's policy replaces the default policy's - `http`, `https`, `mailto`, `tel` and relative links - so `LinkFeature()` with no policy takes the default one, even in a field whose list replaces a config's narrower link feature. A link opens in the same tab or, with `target: "_blank"`, in a new one. The rules of a link are those of a `url` field, [above](#text-links-and-safe-output).
+A link in rich text follows its link feature's `linkPolicy`, not the config's `linkPolicy`, which is the `url` fields'.
 
-### What a save checks
+Each key of the feature's policy replaces the default policy's: `http`, `https`, `mailto`, `tel` and relative links.
 
-The server checks every document against its field's features, without the editor, and refuses one that breaks a rule at its field, with the first problem's message; nothing is rewritten. A document is refused for:
+> [!WARNING]
+> `LinkFeature()` with no policy takes the default one, even in a field whose list replaces a config's narrower link feature.
+
+A link opens in the same tab or, with `target: "_blank"`, in a new one. The rules of a link are those of a `url` field, [above](#text-links-and-safe-output).
+
+### When a save refuses a document
+
+The server checks every document against its field's features, without the editor. It refuses one that breaks a rule at its field, with the first problem's message; nothing is rewritten. A document is refused for:
 
 - a node of a type no feature of the field allows, such as a heading in a field without `HeadingFeature`, or an element the plugin does not know: `Remove the "<type>" element: this field does not allow it`;
 - a node where its parent cannot hold it, such as a list inside a heading;
@@ -305,16 +518,103 @@ The server checks every document against its field's features, without the edito
 - a heading of a level the field does not offer, or a link its policy refuses;
 - a control character in the text other than a tab or a line break.
 
-A document without text - an empty paragraph, or only line breaks - is stored as `null`, so a schema that refuses `null` makes the field required, as for any field.
+A document without text - an empty paragraph, or only line breaks - is stored as `null`. So a schema that refuses `null` makes the field required, as for any field.
 
 ### Reading rich text in the storefront
 
-The store API returns the document as an object, `{ root: { type: "root", children: [...] } }`, in the node shapes of the Lexical editor: `paragraph`, `heading` with its `tag`, `quote`, `list` with its `listType` (`bullet` or `number`) and its `listitem`s, `link` and `autolink` with their `url` and `target`, `linebreak`, and `text` with its `text` and its `format`, bit `1` for bold and `2` for italic. Render each node your storefront knows, and pass every link's `url` through `sanitizeUrl` with the field's policy.
+The store API returns the document as an object, in the node shapes of the Lexical editor. Render each node your storefront knows, and pass every link's `url` through `sanitizeUrl` with the field's policy.
 
-`@mostrajs/cms/shared` holds the helpers, which run in a browser:
+```json
+{
+  "root": {
+    "type": "root",
+    "children": [
+      {
+        "type": "heading",
+        "tag": "h2",
+        "children": [{ "type": "text", "text": "Opening hours", "format": 0 }]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          { "type": "text", "text": "Open ", "format": 0 },
+          { "type": "text", "text": "every day", "format": 1 },
+          { "type": "linebreak" },
+          {
+            "type": "link",
+            "url": "/contact",
+            "target": "_blank",
+            "children": [{ "type": "text", "text": "Contact us", "format": 0 }]
+          }
+        ]
+      },
+      {
+        "type": "list",
+        "listType": "bullet",
+        "children": [
+          {
+            "type": "listitem",
+            "children": [{ "type": "text", "text": "Monday to Friday", "format": 0 }]
+          }
+        ]
+      }
+    ]
+  }
+}
+```
 
-- `parseRichText(value)` turns what a field holds into a document: a document as it is, the column's JSON parsed, plain text as one paragraph per line, or `null` for nothing. A column that held plain text before its field became rich text reads so too.
-- `formatPlainText(document)` writes the text without its formatting, one line per block and per list item, such as for a meta description; an empty text for `null`.
-- `isRichTextEmpty(document)` tells whether a document holds no text.
-- `validateRichText(document, { features })` returns the errors a save would give, each with the path to its node.
-- `findRichTextFeature(features, key)` finds a feature of one key with its options, and `DEFAULT_RICH_TEXT_FEATURES` and `RICH_TEXT_HEADINGS` are the built-in features and the heading levels. The types `RichTextDocument` and `RichTextNode` describe a document.
+The example shows the keys a storefront reads. Each node also carries keys of Lexical's own, such as `version`.
+
+| Node `type` | Keys to read |
+|---|---|
+| `root` | `children`, the document's blocks |
+| `paragraph` | `children` |
+| `heading` | `tag`, its level, and `children` |
+| `quote` | `children` |
+| `list` | `listType`, `bullet` or `number`, and `children`, its `listitem`s |
+| `listitem` | `children` |
+| `link`, `autolink` | `url`, `target` and `children` |
+| `linebreak` | none |
+| `text` | `text`, and `format`: bit `1` for bold, `2` for italic |
+
+The types `RichTextDocument` and `RichTextNode`, from `@mostrajs/cms/shared`, describe a document:
+
+```ts
+type RichTextNode = {
+  type: string
+  children?: RichTextNode[]
+  [key: string]: unknown
+}
+
+type RichTextDocument = {
+  root: RichTextNode & { type: "root"; children: RichTextNode[] }
+}
+```
+
+`@mostrajs/cms/shared` holds the helpers below, which run in a browser.
+
+### `parseRichText(value)`
+
+Turns what a field holds into a document:
+
+```ts
+import { parseRichText } from "@mostrajs/cms/shared"
+
+const summary = parseRichText(page.summary)
+```
+
+- **A document** is returned as it is.
+- **The column's JSON** is parsed.
+- **Plain text** becomes one paragraph per line. A column that held plain text before its field became rich text reads so too.
+- **Nothing** gives `null`.
+
+### Other rich text helpers
+
+| Function | Returns | Description |
+|---|---|---|
+| `formatPlainText(document)` | a text | The text without its formatting, one line per block and per list item, such as for a meta description; an empty text for `null`. |
+| `isRichTextEmpty(document)` | a boolean | Whether a document holds no text. |
+| `validateRichText(document, { features })` | `RichTextError[]`, each `{ path, message }` | The errors a save would give, each with the path to its node. |
+| `findRichTextFeature(features, key)` | a feature, or `undefined` | The feature of one key, with its options. |
+| `DEFAULT_RICH_TEXT_FEATURES` | a list of features | The built-in features. |
+| `RICH_TEXT_HEADINGS` | a list of levels | The heading levels. |

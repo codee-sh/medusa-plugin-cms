@@ -1,24 +1,56 @@
 # Workflows and events
 
-How to use the CMS from your own backend code: the workflows and steps you run, the events you subscribe to, the hook you refuse a write from, and the cache the writes clear; what the store answers over HTTP is in [The store API](./store-api.md), and drafts and versions themselves are in [Collections, drafts and singletons](./collections.md#drafts-and-versions).
+How to use the CMS from your own backend code: the workflows and steps you run, the events you subscribe to, the hook you refuse a write from, and the cache the writes clear. What the store answers over HTTP is in [The store API](./store-api.md), and drafts and versions themselves are in [Collections, drafts and singletons](./collections.md#drafts-and-versions).
 
 ## What `@mostrajs/cms/workflows` exports
 
-Every workflow the plugin's own routes run, and the steps they are built from. The Admin and the store go through the same workflows, so a document your code writes is checked, versioned and announced exactly as an editor's is. A workflow of a collection's documents takes the collection's slug as `collection`, and refuses an unknown one with `NOT_FOUND`.
+Every workflow the plugin's own routes run, and the steps they are built from. The Admin and the store go through the same workflows. So a document your code writes is checked, versioned and announced exactly as an editor's is.
+
+A workflow of a collection's documents takes the collection's slug as `collection`, and refuses an unknown one with `NOT_FOUND`.
 
 ### Writing documents
 
 | Workflow | Input | What it does |
 |---|---|---|
-| `createCmsDocumentWorkflow` | `{ collection, actor_id, document }` | Creates a document from its fields and areas. With drafts it is a draft and gets version 1; without drafts it is published at once. A singleton that already holds its document refuses it. |
-| `updateCmsDocumentWorkflow` | `{ collection, id, actor_id, document, base_version? }` | Saves the fields and areas in `document`; a field left out stays as it was. A draft's rows are written. A published document keeps serving its published content: the save is recorded as a draft version until it is published. Without drafts the save is live at once. |
-| `publishCmsDocumentWorkflow` | `{ collection, id, actor_id, base_version? }` | Publishes the latest version, checked as a publish. Refuses a document with nothing new to publish. |
-| `unpublishCmsDocumentWorkflow` | `{ collection, id, actor_id }` | Turns a published document back into a draft. Refuses a document that is not published. |
+| `createCmsDocumentWorkflow` | `{ collection, actor_id, document }` | Creates a document from its fields and areas. With drafts it is a draft and gets version 1; without drafts it is published at once. |
+| `updateCmsDocumentWorkflow` | `{ collection, id, actor_id, document, base_version? }` | Saves the fields and areas in `document`; a field left out stays as it was. What the save changes is in [What a save changes](#what-a-save-changes). |
+| `publishCmsDocumentWorkflow` | `{ collection, id, actor_id, base_version? }` | Publishes the latest version, checked as a publish. |
+| `unpublishCmsDocumentWorkflow` | `{ collection, id, actor_id }` | Turns a published document back into a draft. |
 | `discardCmsDocumentDraftWorkflow` | `{ collection, id, base_version? }` | Drops the changes waiting over a published document's content. Nothing is deleted: the drafts stay in the history. |
 | `restoreCmsDocumentVersionWorkflow` | `{ collection, id, version_id, actor_id, base_version? }` | Brings an older version back as a new version, saved as `updateCmsDocumentWorkflow` saves it. |
-| `deleteCmsDocumentWorkflow` | `{ collection, id }` | Soft-deletes the document with its blocks and its versions, and returns its id. A singleton refuses it. |
+| `deleteCmsDocumentWorkflow` | `{ collection, id }` | Soft-deletes the document with its blocks and its versions, and returns its id. |
 
-Create, update, publish, unpublish, discard and restore return `{ document, latest_version }`: the document's row as stored, with `has_unpublished_changes`, and the version an editor now edits, `null` in a collection without drafts. Publish, unpublish, discard, restore and reading the versions refuse a collection without drafts, which has no versions.
+The inputs a write takes are explained in [What a write takes](#what-a-write-takes).
+
+### What a save changes
+
+What `updateCmsDocumentWorkflow` writes depends on the document:
+
+- **A draft** - its rows are written.
+- **A published document** - keeps serving its published content. The save is recorded as a draft version until it is published.
+- **A document in a collection without drafts** - the save is live at once.
+
+### What a write returns
+
+Create, update, publish, unpublish, discard and restore return:
+
+```ts
+{ document, latest_version }
+```
+
+- **`document`** - the document's row as stored, with `has_unpublished_changes`.
+- **`latest_version`** - the version an editor now edits, `null` in a collection without drafts.
+
+### When a write is refused
+
+- **A create in a singleton that already holds its document** - `createCmsDocumentWorkflow` refuses it.
+- **A delete in a singleton** - `deleteCmsDocumentWorkflow` refuses it.
+- **A publish of a document with nothing new to publish** - `publishCmsDocumentWorkflow` refuses it.
+- **An unpublish of a document that is not published** - `unpublishCmsDocumentWorkflow` refuses it.
+- **A collection without drafts, which has no versions** - publish, unpublish, discard, restore and reading the versions refuse it.
+- **A `base_version` that is not the latest version** - see [What a write takes](#what-a-write-takes).
+
+How a refusal reaches your route, and with which HTTP status, is in [When a workflow refuses](#when-a-workflow-refuses).
 
 ### Reading documents
 
@@ -32,7 +64,16 @@ Create, update, publish, unpublish, discard and restore return `{ document, late
 | `getCmsDocumentVersionWorkflow` | `{ collection, id, version_id }` | One version with its snapshot. |
 | `listCmsReferencesWorkflow` | `{ collection, id }` | The live rows whose relationship fields point at the document, each `{ collection, field, id }`. |
 
-The two published reads answer exactly what the store's routes answer, so your own route can serve a document in the same shape. `fields` takes the fields as Medusa resolves them into `req.queryConfig.fields`; leave it out for the collection's defaults. `filters` filters by the collection's fields, as `{ featured: true }`. Neither workflow checks a collection's `store: false`: that check belongs to the store's routes, so your route decides what it exposes.
+### The published reads
+
+The two published reads answer exactly what the store's routes answer. So your own route can serve a document in the same shape.
+
+- **`fields`** takes the fields as Medusa resolves them into `req.queryConfig.fields`. Leave it out for the collection's defaults.
+- **`filters`** filters by the collection's fields, as `{ featured: true }`.
+- **`cache`** decides whether the read goes through the cache - see [The cache](#the-cache).
+
+> [!WARNING]
+> Neither workflow checks a collection's `store: false`. That check belongs to the store's routes, so your route decides what it exposes.
 
 ### Other workflows
 
@@ -54,7 +95,15 @@ The steps are the parts the workflows are built from, for a workflow of your own
 - **Decisions:** `prepareCmsDocumentInputStep`, `prepareCmsWriteStep`, `prepareCmsPublishStep`, `prepareCmsUnpublishStep`, `prepareCmsDiscardStep`, `prepareCmsDeleteStep`, `prepareCmsOldVersionsStep`, `prepareCmsVersionSnapshotStep`, `prepareCmsStoreDocumentsStep`.
 - **Writes:** `createCmsDocumentContentStep`, `updateCmsDocumentContentStep`, `deleteCmsDocumentContentStep`, `createCmsVersionStep`, `deleteCmsVersionsStep`, `updateCmsLatestVersionStep`, `createCmsMediaStep`, `clearCmsCacheStep`.
 
-Read with the steps freely. To change a document, run a write workflow rather than the write steps: the workflow is what checks the document, records the version, clears the cache, runs your hook and emits the event.
+Read with the steps freely. To change a document, run a write workflow rather than the write steps. The workflow is what:
+
+- checks the document
+- records the version
+- clears the cache
+- runs your hook
+- emits the event
+
+This workflow of your own reads a page and the rows that point at it:
 
 ```ts
 // src/workflows/get-page-usage.ts
@@ -86,7 +135,11 @@ export const getPageUsageWorkflow = createWorkflow(
 
 ## Running a workflow from your own route
 
-Run a workflow with the request's container, `req.scope`, as Medusa's own routes do. This store route answers the three newest published posts in the store's shape:
+Run a workflow with the request's container, `req.scope`, as Medusa's own routes do.
+
+### Reading from a route
+
+This store route answers the three newest published posts in the store's shape:
 
 ```ts
 // src/api/store/blog/latest/route.ts
@@ -105,6 +158,8 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
   res.json({ posts: result.documents, count: result.count })
 }
 ```
+
+### Writing from a route
 
 A write takes the same call. This Admin route creates a post in a collection with drafts and publishes it at once:
 
@@ -148,10 +203,38 @@ export const POST = async (
 }
 ```
 
-- **`document` is checked by the workflow.** It is the document's fields by name, as the Admin sends them, and the workflow checks it against the collection's config whatever route it came through: a value that does not fit is refused, a taken unique value too, and an empty slug is filled from its source. The fields' values are in [Fields](./fields.md) and the areas' blocks in [Blocks](./blocks.md).
-- **`actor_id` is who made the change.** The workflow stores it as the document's `created_by` and `updated_by` and as the version's author. In an Admin route it is `req.auth_context.actor_id`; for a write no admin user makes, such as an import script, pass an id of your own choosing.
-- **`base_version` is the version you edited.** An update, publish, discard or restore of a document with versions is refused unless `base_version` is the number of its latest version, so your code never writes over an editor's newer work unseen. Read it from `latest_version.version` of the document you got from `getCmsDocumentWorkflow` or from the previous write, as above; a document without versions takes `null`.
-- **A refusal is an error.** `run` throws the workflow's `MedusaError`, and Medusa's error handler answers your route with it: `NOT_FOUND` as `404`, `INVALID_DATA` and `NOT_ALLOWED` as `400`, a taken unique value as `422`. A workflow that fails undoes the writes it made.
+### What a write takes
+
+| Input | Type | Description |
+|---|---|---|
+| `document` | `Record<string, unknown>` | The document's fields by name, as the Admin sends them; checked by the workflow. |
+| `actor_id` | `string` | Who made the change. |
+| `base_version` | `number \| null` | The number of the version you edited. |
+
+**`document` is checked by the workflow.** It is checked against the collection's config, whatever route it came through:
+
+- a value that does not fit is refused
+- a taken unique value is refused
+- an empty slug is filled from its source
+
+The fields' values are in [Fields](./fields.md) and the areas' blocks in [Blocks](./blocks.md).
+
+**`actor_id` is who made the change.** The workflow stores it as the document's `created_by` and `updated_by`, and as the version's author. In an Admin route it is `req.auth_context.actor_id`. For a write no admin user makes, such as an import script, pass an id of your own choosing.
+
+**`base_version` is the version you edited.** An update, publish, discard or restore of a document with versions is refused unless `base_version` is the number of its latest version. So your code never writes over an editor's newer work unseen.
+
+- Read it from `latest_version.version` of the document you got from `getCmsDocumentWorkflow`, or from the previous write, as above.
+- A document without versions takes `null`.
+
+### When a workflow refuses
+
+A refusal is an error. `run` throws the workflow's `MedusaError`, and Medusa's error handler answers your route with it:
+
+- **`NOT_FOUND`** - answered as `404`.
+- **`INVALID_DATA` and `NOT_ALLOWED`** - answered as `400`.
+- **A taken unique value** - answered as `422`.
+
+A workflow that fails undoes the writes it made.
 
 ## Document events
 
@@ -163,12 +246,49 @@ Every write workflow emits one event after its last write. Your subscribers lear
 | `cms.document.updated` | `{ collection, id, action, status }` | a save, a publish, an unpublish, a discard, a restore |
 | `cms.document.deleted` | `{ collection, id }` | a delete |
 
-- **`action`** says what the update did: `save`, `publish`, `unpublish`, `restore` or `discard`. Only `publish` and `unpublish` change what the store serves. A save in a collection without drafts is a `publish`, as it is live at once.
-- **`status`** is the document's status after the write, `draft` or `published`. A create in a collection without drafts is `published`; a save of a published document with drafts stays `published`, as its draft waits beside the live content.
-- **The data carries ids only.** Read the document itself in your subscriber, with `getPublishedCmsDocumentWorkflow` for what the store now serves.
-- **The event follows a successful write.** Medusa releases a workflow's events when the workflow completes, so a write that fails or a `validate` hook that refuses it emits nothing.
+### The event data
 
-The names are exported from the package root as `DocumentEvents` (`DOCUMENT_CREATED`, `DOCUMENT_UPDATED`, `DOCUMENT_DELETED`), the data types as `DocumentCreatedEventData`, `DocumentUpdatedEventData` and `DocumentDeletedEventData`. This subscriber reacts when a page goes live or is taken down:
+The names are exported from the package root as `DocumentEvents`, the data types as `DocumentCreatedEventData`, `DocumentUpdatedEventData` and `DocumentDeletedEventData`:
+
+```ts
+// Exported from "@mostrajs/cms"
+const DocumentEvents = {
+  DOCUMENT_CREATED: "cms.document.created",
+  DOCUMENT_UPDATED: "cms.document.updated",
+  DOCUMENT_DELETED: "cms.document.deleted",
+} as const
+
+type DocumentCreatedEventData = {
+  collection: string
+  id: string
+  status: "draft" | "published"
+}
+
+type DocumentUpdatedEventData = {
+  collection: string
+  id: string
+  action: "save" | "publish" | "unpublish" | "restore" | "discard"
+  status: "draft" | "published"
+}
+
+type DocumentDeletedEventData = {
+  collection: string
+  id: string
+}
+```
+
+- **`action`** says what the update did: `save`, `publish`, `unpublish`, `restore` or `discard`. Only `publish` and `unpublish` change what the store serves. A save in a collection without drafts is a `publish`, as it is live at once.
+- **`status`** is the document's status after the write, `draft` or `published`.
+  - A create in a collection without drafts is `published`.
+  - A save of a published document with drafts stays `published`, as its draft waits beside the live content.
+- **The data carries ids only.** Read the document itself in your subscriber, with `getPublishedCmsDocumentWorkflow` for what the store now serves.
+
+> [!NOTE]
+> The event follows a successful write. Medusa releases a workflow's events when the workflow completes. So a write that fails, or a `validate` hook that refuses it, emits nothing.
+
+### Subscribing to a change
+
+A subscriber is the place for a side effect after a write, such as telling your storefront to refresh a page. This subscriber reacts when a page goes live or is taken down:
 
 ```ts
 // src/subscribers/cms-page-changed.ts
@@ -200,16 +320,26 @@ export const config: SubscriberConfig = {
 }
 ```
 
-A subscriber is the place for a side effect after a write, such as telling your storefront to refresh a page.
-
 ## The `validate` hook
 
-The plugin exposes one workflow hook, `validate`, on `createCmsDocumentWorkflow`, `updateCmsDocumentWorkflow`, `publishCmsDocumentWorkflow`, `unpublishCmsDocumentWorkflow` and `deleteCmsDocumentWorkflow`. Your handler runs after the plugin's own checks and before the first write, and refuses the write by throwing. It is the place for a rule that reads other records, such as keeping a page in use from being unpublished. What it gets, when it runs and how its error reaches the editor are in [Validation](./validation.md#your-own-rules-at-a-write).
+The plugin exposes one workflow hook, `validate`, on these workflows:
+
+- `createCmsDocumentWorkflow`
+- `updateCmsDocumentWorkflow`
+- `publishCmsDocumentWorkflow`
+- `unpublishCmsDocumentWorkflow`
+- `deleteCmsDocumentWorkflow`
+
+Your handler runs after the plugin's own checks and before the first write. It refuses the write by throwing. It is the place for a rule that reads other records, such as keeping a page in use from being unpublished.
+
+What it gets, when it runs and how its error reaches the editor are in [Validation](./validation.md#your-own-rules-at-a-write).
 
 ## The cache
 
-When your project runs Medusa's Caching Module, the published reads, `getPublishedCmsDocumentWorkflow` and `listPublishedCmsDocumentsWorkflow`, read through it by default. Each write workflow clears the cached reads its write changed, the collection's lists among them, before it returns, so a read right after the write answers the new content. Without the Caching Module there is nothing to clear and every read goes to the database.
+When your project runs Medusa's Caching Module, the two published reads go through it by default: `getPublishedCmsDocumentWorkflow` and `listPublishedCmsDocumentsWorkflow`. Without the Caching Module there is nothing to clear, and every read goes to the database.
+
+Each write workflow clears the cached reads its write changed before it returns, the collection's lists among them. So a read right after the write answers the new content.
 
 - **Pass `cache: false`** to a published read that must come from the database.
-- **Write through the workflows.** A write of your own straight to the CMS's models through their module service is cleared by Medusa's own events only after your workflow ends; until then a cached read may answer the old content.
+- **Write through the workflows.** A write of your own straight to the CMS's models through their module service is cleared by Medusa's own events only after your workflow ends. Until then a cached read may answer the old content.
 - **The Admin's reads are never cached**, nor are the reads inside a write.

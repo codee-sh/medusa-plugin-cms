@@ -4,7 +4,13 @@ What the plugin expects of the data models in your content module - the module, 
 
 ## The module and its service
 
-Your content lives in a Medusa module of your own. The plugin adds no tables for it: you define every model with Medusa's DML, and the plugin reads and writes them through your module's service. The config's `module` names that module, and its service must hold every model the config registers - collections, block types and the area model - so one service writes a whole document.
+Your content lives in a Medusa module of your own. The plugin adds no tables for it: you define every model with Medusa's DML, and the plugin reads and writes them through your module's service.
+
+The config's `module` names that module. Its service must hold every model the config registers, so one service writes a whole document:
+
+- each collection's model
+- each block type's model
+- the area model
 
 ```ts
 // src/modules/content/index.ts
@@ -33,9 +39,16 @@ export const cmsConfig = defineConfig({
 })
 ```
 
-Each key of `MedusaService({ ... })` must be the PascalCase of the model's DML name: `model.define("content_page", ...)` is `ContentPage`. The plugin calls the methods Medusa generates from that name, such as `createContentPages`, so a service that holds the model under another key starts, and then fails at its first read or write.
+### Naming the service's keys
 
-Keep each model file directly in your module's `models/` folder: Medusa loads models from the top of that folder only, and a model in a subfolder fails at boot with `Entity '...' was not discovered`.
+Each key of `MedusaService({ ... })` must be the PascalCase of the model's DML name: `model.define("content_page", ...)` is `ContentPage`. The plugin calls the methods Medusa generates from that name, such as `createContentPages`.
+
+> [!WARNING]
+> A service that holds the model under another key starts, and then fails at its first read or write.
+
+### Where the model files go
+
+Keep each model file directly in your module's `models/` folder. Medusa loads models from the top of that folder only, and a model in a subfolder fails at boot with `Entity '...' was not discovered`.
 
 ## A collection's model
 
@@ -48,7 +61,11 @@ A collection's model holds the document's content columns and four columns the p
 | `created_by` | `model.text().nullable()` | the id of the admin user who created the document |
 | `updated_by` | `model.text().nullable()` | the id of the admin user who saved it last |
 
-The plugin writes these on every collection, with drafts or without, so a collection without drafts has them too: its documents are written `published` at once. They are not fields: listing one in `fields` stops the start. The enum must hold exactly `draft` and `published`.
+What to know about these columns:
+
+- **Every collection has them, with drafts or without.** A collection without drafts writes its documents `published` at once.
+- **They are not fields.** Listing one in `fields` stops the start.
+- **The enum must hold exactly `draft` and `published`.**
 
 ```ts
 // src/modules/content/models/content-page.ts
@@ -84,13 +101,31 @@ A block type's model has a column of its own instead, `rank`, and the area model
 
 ## Ids
 
-Every model the config registers - each collection, each block type and the area model - needs an id with a prefix, `model.id({ prefix: "cntpage" })`, and no two of them may share one. The plugin generates the ids of new rows itself, from the prefix, before it writes them: a new block's id is known before its areas are written. A model without a prefix, or with a prefix another registered model uses, stops the start with an error naming both.
+Every model the config registers needs an id with a prefix, `model.id({ prefix: "cntpage" })`, and no two of them may share one. That covers each collection, each block type and the area model.
+
+The plugin generates the ids of new rows itself, from the prefix, before it writes them. So a new block's id is known before its areas are written.
+
+### When the start fails
+
+- **A model has no prefix** - the start stops.
+- **A model uses a prefix another registered model uses** - the start stops with an error naming both.
 
 ## Content columns
 
-Every column you list in the config's `fields` is a field of the form. Make them nullable. A draft is saved before it is complete, and a block is added before its fields are filled, so the database must take an empty value; whether a field must be filled is the config's, in its Zod schemas: `serverValidation` for every save, `serverPublishValidation` for a publish. [Fields](./fields.md) explains both.
+Every column you list in the config's `fields` is a field of the form. Make them nullable:
 
-A column that is not nullable and has no default must be filled at every save, so the config must list it as a field whose `serverValidation` refuses `null`, such as `z.string()`; the start stops otherwise, with `"<column>" is required by its column`. A column with a default, such as `model.boolean().default(false)`, needs neither.
+- A draft is saved before it is complete.
+- A block is added before its fields are filled.
+
+So the database must take an empty value. Whether a field must be filled is the config's, in its Zod schemas: `serverValidation` for every save, `serverPublishValidation` for a publish. [Fields](./fields.md) explains both.
+
+### Required columns
+
+A column that is not nullable and has no default must be filled at every save. The config must list it as a field whose `serverValidation` refuses `null`, such as `z.string()`. The start stops otherwise, with `"<column>" is required by its column`.
+
+A column with a default, such as `model.boolean().default(false)`, needs neither.
+
+### A field's type and its column
 
 A field's `type` must fit its column:
 
@@ -106,7 +141,7 @@ A field's `type` must fit its column:
 | `media` | `model.text()` for one file; `model.array()` with `multiple: true` for several |
 | `relationship` | the foreign key of a `belongsTo`, such as `category_id` |
 
-What else to know about content columns:
+### What else to know
 
 - **A column the config does not list is no field.** The Admin does not show it, a save that sends it is refused, and the store API leaves it out. Your own code may still write it through your module's service.
 - **`.searchable()`** on a text column turns on the search of the collection's table in the Admin, through Medusa's free-text search. A `richtext` field cannot sit on a searchable column, as a search would match its JSON.
@@ -115,15 +150,53 @@ What else to know about content columns:
 
 ## `metadata`
 
-A collection's model may have `metadata: model.json().nullable()`, as Medusa's own models do. It is never a field: no config lists it, and a save through the plugin that sends it is refused. Your own code writes it through your module's service, and the store API returns a document's `metadata` whole, `null` when it is empty. Use it for values that say how a document is shown rather than what it says, and keep content in columns, where a field validates it and the Admin edits it. A `metadata` column that is not `json` stops the start.
+A collection's model may have a `metadata` column, as Medusa's own models do:
+
+```ts
+// src/modules/content/models/content-page.ts
+// ...
+metadata: model.json().nullable(),
+// ...
+```
+
+What to know about it:
+
+- **It is never a field.** No config lists it, and a save through the plugin that sends it is refused.
+- **Your own code writes it**, through your module's service.
+- **The store API returns a document's `metadata` whole**, `null` when it is empty.
+- **A `metadata` column that is not `json`** stops the start.
+
+Use it for values that say how a document is shown rather than what it says. Keep content in columns, where a field validates it and the Admin edits it.
 
 ## Unique values
 
-A column covered alone by a unique index - `.unique()` on the property, or an entry of `.indexes()` with `unique: true` over that one column - is unique to the plugin. Before a save it reads which values live documents already hold, the edited document left out, and refuses a value another live document holds with `"<value>" is used by another document` at the field, answered as `422`. In the Admin, the create and edit forms check a unique field once the editor pauses typing: a slug the form filled in moves to its first free `-2`, `-3` form, and a value the editor typed blocks the save with that form offered.
+A column covered alone by a unique index is unique to the plugin. Either of these declares one:
 
-A document is live until it is deleted, a draft included; a deleted document frees its values at once. Limit the index to live rows with `where: "deleted_at IS NULL"`, as in the example above, so the database agrees with that read. In a collection with drafts, a published document's edits wait in its draft version, so their unique values are checked when it is published.
+- `.unique()` on the property
+- an entry of `.indexes()` with `unique: true` over that one column
 
-The index stays the guard against two saves racing past the read: the second fails with the database's error, a `400`. A unique index over several columns is the database's alone, and the plugin does not read it before a save.
+Before a save, the plugin reads which values live documents already hold, the edited document left out.
+
+### When a value is taken
+
+- **Another live document holds the value** - the save is refused at the field with `"<value>" is used by another document`, answered as `422`.
+- **Two saves race past the read** - the index stays the guard, and the second fails with the database's error, a `400`.
+
+### In the Admin
+
+The create and edit forms check a unique field once the editor pauses typing:
+
+- **A slug the form filled in** moves to its first free `-2`, `-3` form.
+- **A value the editor typed** blocks the save, with that form offered.
+
+### Live documents and drafts
+
+A document is live until it is deleted, a draft included; a deleted document frees its values at once. Limit the index to live rows with `where: "deleted_at IS NULL"`, as in the example above, so the database agrees with that read.
+
+In a collection with drafts, a published document's edits wait in its draft version. So their unique values are checked when it is published.
+
+> [!NOTE]
+> A unique index over several columns is the database's alone, and the plugin does not read it before a save.
 
 ## Relations between collections
 
@@ -145,7 +218,7 @@ export const ContentCategory = model.define("content_category", {
 })
 ```
 
-The `belongsTo` named `category` on the page adds the column `category_id`, which the config lists as a `relationship` field with `relationTo: "category"`. The field, what every save checks of its id, and what the start refuses are in [Fields](./fields.md#relationships).
+The `belongsTo` named `category` on the page adds the column `category_id`. The config lists it as a `relationship` field with `relationTo: "category"`. The field, what every save checks of its id, and what the start refuses are in [Fields](./fields.md#relationships).
 
 What to know about relations at the model:
 
@@ -165,19 +238,45 @@ npx medusa db:migrate
 
 `db:migrate` also creates the plugin's own tables, such as the one holding versions, the first time it runs.
 
-Read each generated migration before you run it. `db:generate` compares an index declared with `where` by its name, so a change of its `where`, `on` or `unique` under the same name reaches the snapshot and not the migration; drop and recreate the index in the migration yourself, or give it a new name. And a column that becomes required, or gains a unique index, needs the rows already stored to fit it before the migration runs.
+### Before you run a migration
+
+Read each generated migration before you run it:
+
+- **A changed index declared with `where`** - `db:generate` compares such an index by its name. A change of its `where`, `on` or `unique` under the same name reaches the snapshot and not the migration. Drop and recreate the index in the migration yourself, or give it a new name.
+- **A column that becomes required, or gains a unique index** - the rows already stored must fit it before the migration runs.
 
 ## Adding to the content model
 
 The same steps for each kind of content. Run the migrations after each model change.
 
-| To add | Model change | Config change |
-|---|---|---|
-| A collection | A new model with an id prefix of its own and `status`, `published_at`, `created_by`, `updated_by`; added to your module's service | An entry in `collections`, with `admin.sections` |
-| A collection with blocks | As a collection, plus `areas: model.hasMany(...)` to the area model and `.cascades({ delete: ["areas"] })`; on the area model a nullable `belongsTo` back, the owner column in its check, and a unique index on the owner column and `name` | The entry's `areas`, each naming its block types, and each area in a section |
-| A relation | A nullable `belongsTo` on the model that points, and a `hasMany` on its target | A `relationship` field on the foreign key, such as `category_id`, with `relationTo` |
-| A block type | A new model with an id prefix, `rank` and `area: model.belongsTo(...)` to the area model; on the area model a `hasMany` to it, in its `.cascades()` | An entry in `blocks`, and its slug in the `blocks` of each area that takes it |
-| Areas in a block | None on the block's model; on the area model, once, the unique index on `parent_id` and `name` | The block's `areas`, each naming its block types |
-| A media field | A nullable `model.text()` for one file, or `model.array()` for several | A field of `type: "media"` with `stores`, `multiple: true` on an array, and `media.provider` once per config |
+### A collection
+
+- **Model:** a new model with an id prefix of its own and `status`, `published_at`, `created_by`, `updated_by`; added to your module's service.
+- **Config:** an entry in `collections`, with `admin.sections`.
+
+### A collection with blocks
+
+- **Model:** as a collection, plus `areas: model.hasMany(...)` to the area model and `.cascades({ delete: ["areas"] })`. On the area model: a nullable `belongsTo` back, the owner column in its check, and a unique index on the owner column and `name`.
+- **Config:** the entry's `areas`, each naming its block types, and each area in a section.
+
+### A relation
+
+- **Model:** a nullable `belongsTo` on the model that points, and a `hasMany` on its target.
+- **Config:** a `relationship` field on the foreign key, such as `category_id`, with `relationTo`.
+
+### A block type
+
+- **Model:** a new model with an id prefix, `rank` and `area: model.belongsTo(...)` to the area model. On the area model: a `hasMany` to it, in its `.cascades()`.
+- **Config:** an entry in `blocks`, and its slug in the `blocks` of each area that takes it.
+
+### Areas in a block
+
+- **Model:** none on the block's model. On the area model, once: the unique index on `parent_id` and `name`.
+- **Config:** the block's `areas`, each naming its block types.
+
+### A media field
+
+- **Model:** a nullable `model.text()` for one file, or `model.array()` for several.
+- **Config:** a field of `type: "media"` with `stores`, `multiple: true` on an array, and `media.provider` once per config.
 
 The area model and the block types are explained in [Blocks and areas](./blocks.md), and media providers in [Media](./media.md).
