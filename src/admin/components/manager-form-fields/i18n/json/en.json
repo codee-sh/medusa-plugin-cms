@@ -41,7 +41,7 @@
     "errorCount_other": "{{count}} errors"
   },
   "combobox": {
-    "unavailable": "Options unavailable: no source named \"{{name}}\" is registered",
+    "unavailable": "Options unavailable: no hook named \"{{name}}\" is registered",
     "loadFailed": "Could not load the options",
     "unknownValue": "Unknown value: {{value}}"
   },

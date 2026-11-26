@@ -217,7 +217,7 @@ describe("prepareRegistry", () => {
     }
 
     expect(errorOf(config)).toContain(
-      'collection "tag": admin "edit" needs one of page, drawer'
+      'collection "tag": admin "edit" needs "page" or "drawer"'
     )
   })
 
@@ -2820,7 +2820,7 @@ describe("prepareRegistry, on media", () => {
       (config) => {
         setRecipeField(config, "cover", { stores: "url" })
       },
-      'media "cover" stores "url", which file cannot read',
+      'media "cover" stores "url", but the media provider "file" stores only "id"',
     ],
     [
       "several files on a text column",

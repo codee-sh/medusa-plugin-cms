@@ -28,7 +28,7 @@ export const validateMediaProviderFields = (
 
       if (!media.stores.includes(field.stores!)) {
         throw buildConfigError(
-          `${path}: media "${field.name}" stores "${field.stores}", which ${media.identifier} cannot read`
+          `${path}: media "${field.name}" stores "${field.stores}", but the media provider "${media.identifier}" stores only ${media.stores.map((store) => `"${store}"`).join(" and ")}`
         )
       }
     }

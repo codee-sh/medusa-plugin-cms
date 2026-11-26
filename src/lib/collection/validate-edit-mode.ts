@@ -35,7 +35,7 @@ export const validateEditMode = (
 
   if (!EDIT_MODES.includes(admin.edit)) {
     throw buildConfigError(
-      `${path}: admin "edit" needs one of ${EDIT_MODES.join(", ")}`
+      `${path}: admin "edit" needs ${EDIT_MODES.map((mode) => `"${mode}"`).join(" or ")}`
     )
   }
 
@@ -45,7 +45,7 @@ export const validateEditMode = (
 
   if (config.drafts === true) {
     throw buildConfigError(
-      `${path}: admin "edit" "drawer" takes no "drafts: true", as a drawer has no status or publish`
+      `${path}: admin "edit" "drawer" takes no "drafts: true", as a drawer shows no status and cannot publish`
     )
   }
 

@@ -45,7 +45,7 @@
     "errorCount_other": "{{count}} błędu"
   },
   "combobox": {
-    "unavailable": "Opcje niedostępne: nie zarejestrowano źródła o nazwie „{{name}}”",
+    "unavailable": "Opcje niedostępne: nie zarejestrowano hooka o nazwie „{{name}}”",
     "loadFailed": "Nie udało się wczytać opcji",
     "unknownValue": "Nieznana wartość: {{value}}"
   },

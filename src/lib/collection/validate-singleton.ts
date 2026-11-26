@@ -23,7 +23,7 @@ export const validateSingleton = (
 
   if (config.drafts === true) {
     throw buildConfigError(
-      `${path}: a singleton takes no "drafts: true", as its page has no status, publish or history`
+      `${path}: a singleton takes no "drafts: true", as its page shows no status, publish actions, or version history`
     )
   }
 

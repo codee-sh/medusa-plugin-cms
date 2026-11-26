@@ -2,24 +2,26 @@
 
 `@mostrajs/cms`
 
-CMS for Medusa v2: model content as Medusa data models, edit it in Medusa Admin with drafts, versions and blocks, and serve it through the store API.
+Mostra is a CMS for Medusa v2 that keeps your content in your store's own project. You define it as data models, editors manage it in the Admin, and the Store API serves it to your storefront.
 
-Your content lives in the same project as your store - its database, its Admin, its users and roles - so there is no second backend to run, and no product ids to keep in sync between two systems.
+Your content shares the store's database, Admin, users, and roles.
+
+You don't host a separate CMS, and you don't copy product data between two systems.
 
 ## Features
 
 - Content as Medusa data models in a module of your own, described by one typed config
 - Admin screens under **Content**: tables with filters and sorting, forms in sections and tabs, editing on a page or in a drawer, and routes that group collections into pages
-- Drafts and versions per collection: **Publish**, **Unpublish**, **Discard** and a version history to restore from
+- Drafts and versions per collection: **Publish**, **Unpublish**, **Discard**, and a version history to restore from
 - Singletons for one-of-a-kind content such as site settings
 - Blocks in areas, ordered and nested, for page builders and repeated content
-- Fields: text, number, boolean, date, select, combobox, text list, slug, URL, rich text, media and relationships between collections
-- Rich text edited with [Lexical](https://lexical.dev) and stored as its JSON document, with the formatting each field allows
+- Fields: text, number, boolean, date, select, combobox, text list, slug, URL, rich text, media, and relationships between collections
+- Rich text edited with [Lexical](https://lexical.dev) and stored as Lexical JSON, with the formatting each field allows
 - Media through Medusa's File Module, or a media provider of your own
 - Server-side validation with Zod schemas, mirrored in the Admin, and your own rules at every write
-- Admin extensions: your own field components, options loaded by a hook, widgets in the plugin's pages
-- Admin texts in English and Polish, and your config's texts translatable
-- Store API for published documents, with field selection, filters and lookup by slug
+- Admin extensions: your own field components, options loaded by a hook, and widgets in the plugin's pages
+- The Admin in English and Polish, with the texts of your config translatable
+- Store API for published documents, with field selection, filters, and lookup by slug
 - Workflows exported for your own routes and subscribers
 
 ## Compatibility
@@ -37,7 +39,7 @@ yarn add @mostrajs/cms
 
 ## Basic setup
 
-**1. A module with your content models.** A collection's model carries the columns the plugin writes: `status`, `published_at`, `created_by` and `updated_by`. What else a model needs is in [Models](./docs/models.md).
+**1. A module with your content models.** Each collection's model carries the columns the plugin writes: `status`, `published_at`, `created_by`, and `updated_by`. [Models](./docs/models.md) covers what else a model needs.
 
 ```typescript
 // src/modules/content/index.ts
@@ -60,7 +62,7 @@ export const CONTENT_MODULE = "content"
 export default Module(CONTENT_MODULE, { service: ContentModuleService })
 ```
 
-**2. The CMS config**, which says how each model is edited and served:
+**2. The CMS config.** It tells the plugin how editors edit each model and how the Store API serves it:
 
 ```typescript
 // src/cms/config.ts
@@ -106,14 +108,14 @@ module.exports = defineConfig({
 })
 ```
 
-**4. Create the tables** - your module's and the plugin's own:
+**4. Create the tables** of your module and of the plugin:
 
 ```bash
 npx medusa db:generate content
 npx medusa db:migrate
 ```
 
-The pages appear under **Content** in the Admin, and the store API serves them at `/store/cms/page`. Continue with the guides under [Documentation](#documentation).
+The pages appear under **Content** in the Admin, and the Store API serves them at `/store/cms/page`. Continue with the guides under [Documentation](#documentation).
 
 ## Documentation
 
@@ -133,10 +135,10 @@ The pages appear under **Content** in the Admin, and the store API serves them a
 
 ## Exports
 
-- `@mostrajs/cms` - `defineConfig`, `validateConfig`, the config types, the media providers (`FileMediaProvider`, `AbstractCmsMediaProvider`), the rich text features and the document events
-- `@mostrajs/cms/workflows` - the CMS workflows and steps, for your own routes and subscribers
-- `@mostrajs/cms/admin-extensions` - `defineCmsFieldComponent`, `defineCmsOptionsHook`, `useDocumentValue`, `useBlockPlace` and their types, for your Admin
-- `@mostrajs/cms/shared` - code for both sides, such as `sanitizeUrl`, `normalizeSlug` and the rich text helpers
+- **`@mostrajs/cms`** - `defineConfig`, `validateConfig`, the config types, the media providers (`FileMediaProvider`, `AbstractCmsMediaProvider`), the rich text features, and the document events
+- **`@mostrajs/cms/workflows`** - the plugin's workflows and steps, for your own routes and subscribers
+- **`@mostrajs/cms/admin-extensions`** - `defineCmsFieldComponent`, `defineCmsOptionsHook`, `useDocumentValue`, and `useBlockPlace`, with their types, for your Admin
+- **`@mostrajs/cms/shared`** - code that runs on the server and in a browser, such as `sanitizeUrl`, `normalizeSlug`, and the rich text helpers
 
 ## License
 
@@ -144,4 +146,4 @@ MIT
 
 ## Author
 
-Codee Team - [https://codee.dev](https://codee.dev)
+Codee Team ([https://codee.dev](https://codee.dev))
