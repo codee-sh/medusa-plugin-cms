@@ -1,9 +1,5 @@
 # @mostrajs/cms
 
-## Published as `@codee-sh/medusa-plugin-cms`
-
-The same plugin, under its first name, up to `0.1.1`. That package is deprecated; `@mostrajs/cms` continues it.
-
 ## 0.1.0
 
 ### Minor Changes
@@ -58,13 +54,17 @@ The same plugin, under its first name, up to `0.1.1`. That package is deprecated
   - [Store API](https://github.com/mostrajs/cms/blob/v0.1.0/docs/store-api.md)
   - [Workflows and events](https://github.com/mostrajs/cms/blob/v0.1.0/docs/workflows.md)
 
-### 0.1.1
+## Published as `@codee-sh/medusa-plugin-cms`
+
+The same plugin, under its first name, up to `0.1.1`. That package is deprecated; `@mostrajs/cms` continues it.
+
+### `@codee-sh/medusa-plugin-cms@0.1.1`
 
 #### Patch Changes
 
 - [#5](https://github.com/mostrajs/cms/pull/5) [`625f645`](https://github.com/mostrajs/cms/commit/625f6456142d782868a86fa9e95b648d1ac8d97a) Thanks [@kriss145](https://github.com/kriss145)! - The package holds the compiled plugin again. `0.1.0` was published without its build - only its type declarations - so Medusa could not load it; install `0.1.1` or later instead.
 
-### 0.1.0
+### `@codee-sh/medusa-plugin-cms@0.1.0`
 
 #### Minor Changes
 
