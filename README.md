@@ -114,19 +114,6 @@ npx medusa db:migrate
 
 The pages appear under **Content** in the Admin, and the store API serves them at `/store/cms/page`. Continue with the guides under [Documentation](#documentation).
 
-## Moving from `@codee-sh/medusa-plugin-cms`
-
-The plugin was published as `@codee-sh/medusa-plugin-cms` up to `0.1.1`; that package is deprecated. Nothing changes but the name: no data, table, route or config key.
-
-**Swap the package:**
-
-```bash
-npm uninstall @codee-sh/medusa-plugin-cms
-npm install @mostrajs/cms
-```
-
-**Rename every import and the plugin's `resolve`** in `medusa-config.ts`: `@codee-sh/medusa-plugin-cms` becomes `@mostrajs/cms`, its `/workflows`, `/admin-extensions` and `/shared` entry points with it. Then delete `node_modules/.vite` before starting the Admin, so Vite drops its copy of the old package.
-
 ## Documentation
 
 - [Models](./docs/models.md)
