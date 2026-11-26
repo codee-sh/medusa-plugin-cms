@@ -79,7 +79,7 @@ A document keeps 50 versions. Once it records one more, the oldest beyond the li
 
 ```ts
 // src/cms/config.ts
-import { defineConfig } from "@codee-sh/medusa-plugin-cms"
+import { defineConfig } from "@mostrajs/cms"
 
 export const cmsConfig = defineConfig({
   // ...module, collections
@@ -119,7 +119,7 @@ A host adds its own cards to a route's page with a widget in `cms.route.details`
 ```tsx
 import { defineWidgetConfig } from "@medusajs/admin-sdk"
 import type { DetailWidgetProps } from "@medusajs/framework/types"
-import type { CmsRouteWidgetData } from "@codee-sh/medusa-plugin-cms/admin-extensions"
+import type { CmsRouteWidgetData } from "@mostrajs/cms/admin-extensions"
 
 const PageSettingsPreview = ({ data }: DetailWidgetProps<CmsRouteWidgetData>) => {
   const settings = data.collections.find(({ slug }) => slug === "page_settings")

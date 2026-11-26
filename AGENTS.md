@@ -2,7 +2,7 @@
 
 Operational guide for AI agents working in this repository.
 
-`@codee-sh/medusa-plugin-cms` is a CMS for Medusa. A project models its content as ordinary Medusa
+`@mostrajs/cms` is a CMS for Medusa. A project models its content as ordinary Medusa
 data models and registers them in a config; the plugin provides the workflows, the Admin and store APIs
 and the Admin **Content** screens. It owns no content table.
 

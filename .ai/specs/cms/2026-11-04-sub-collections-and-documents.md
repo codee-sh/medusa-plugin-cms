@@ -348,7 +348,7 @@ its media library, such as:
 
 ```ts
 // the host project's src/cms/asset-media-provider.ts
-import { AbstractCmsMediaProvider, type CmsMedia } from "@codee-sh/medusa-plugin-cms"
+import { AbstractCmsMediaProvider, type CmsMedia } from "@mostrajs/cms"
 
 export class AssetMediaProvider extends AbstractCmsMediaProvider {
   static identifier = "asset"
@@ -399,11 +399,11 @@ Content columns are nullable so a draft can be incomplete; each field says in th
 ### The config
 
 Plain data except `serverTransform` functions and `serverValidation` schemas (main spec D6, D33), passed as
-`plugins: [{ resolve: "@codee-sh/medusa-plugin-cms", options: { config } }]`:
+`plugins: [{ resolve: "@mostrajs/cms", options: { config } }]`:
 
 ```ts
 // the host project's src/cms/config.ts
-import { defineConfig, FileMediaProvider } from "@codee-sh/medusa-plugin-cms"
+import { defineConfig, FileMediaProvider } from "@mostrajs/cms"
 import { ContentBlockGrid, ContentBlockGridItem, ContentBlockHero, ContentBlogCategory, ContentPage } from "../modules/content/models"
 
 const SECTIONS = { label: "Sections", blocks: ["hero", "grid"] }
@@ -2242,7 +2242,7 @@ CMS keeps that shape, with the cache decided by the workflow and not by its call
 - The read steps `get-cms-document` and `list-cms-documents` take `cache?: boolean`, `false` by default,
   and pass `options.cache` only when it is `true`.
 - `get-published-cms-document` and `list-published-cms-documents` - the store's reads, exported from
-  `@codee-sh/medusa-plugin-cms/workflows` with the other workflows, for a project's own route,
+  `@mostrajs/cms/workflows` with the other workflows, for a project's own route,
   job or sitemap - read the cache always, with `cache?: boolean` in their input, `true` by default, to
   read past it. A cached published read is current after every write, as each write clears it
   (`clear-cms-cache`).

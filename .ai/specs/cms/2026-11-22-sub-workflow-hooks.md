@@ -35,7 +35,7 @@ to the host, which needs a place to put it.
 - The handlers are a `Map` the workflow object shares by reference with `WorkflowManager`
   (`dist/utils/composer/create-workflow.js:91-136`). A handler registered on a second copy of the
   package lands in a `Map` the registry does not read, and is lost without an error.
-- The first host's backend resolves the plugin from `apps/backend/node_modules/@codee-sh/medusa-plugin-cms`,
+- The first host's backend resolves the plugin from `apps/backend/node_modules/@mostrajs/cms`,
   for its imports and Medusa's plugin loading alike; a stale pnpm copy sits in the workspace root
   `node_modules` (checked 2026-11-22).
 - Each workflow's last check before its first write (`src/workflows/cms/workflows/`):
@@ -55,7 +55,7 @@ to the host, which needs a place to put it.
 ## Target Behavior
 
 - A host registers `<workflow>.hooks.validate(handler)` on any of the five write workflows, imported
-  from `@codee-sh/medusa-plugin-cms/workflows`.
+  from `@mostrajs/cms/workflows`.
 - The handler gets `{ input, collection, document }`: the workflow's input, the collection's slug, and the
   document as stored - `null` for a create.
 - It runs once per run, after the plugin's checks and before the first write; a throw refuses the write,

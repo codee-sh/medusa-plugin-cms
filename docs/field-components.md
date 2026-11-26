@@ -10,7 +10,7 @@ When the CMS cannot draw what a field needs - a product picked after a category,
 
    ```ts
    // src/admin/cms/cms-extensions.ts
-   import { defineCmsFieldComponent } from "@codee-sh/medusa-plugin-cms/admin-extensions"
+   import { defineCmsFieldComponent } from "@mostrajs/cms/admin-extensions"
 
    defineCmsFieldComponent("cta-link", {
      load: () => import("./cta-link.js").then((module) => ({ default: module.CtaLink })),
@@ -35,7 +35,7 @@ When the CMS cannot draw what a field needs - a product picked after a category,
 
    ```tsx
    // src/admin/cms/cta-link.tsx
-   import { type CmsFieldComponentProps, useDocumentValue } from "@codee-sh/medusa-plugin-cms/admin-extensions"
+   import { type CmsFieldComponentProps, useDocumentValue } from "@mostrajs/cms/admin-extensions"
    import { Form } from "@medusajs/dashboard/components"
    import { Input, Switch } from "@medusajs/ui"
 

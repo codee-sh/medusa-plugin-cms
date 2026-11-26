@@ -85,7 +85,7 @@ The config reaches the Admin as JSON, so it cannot hold a function. `options: { 
 
    ```ts
    // src/admin/cms/cms-extensions.ts
-   import { defineCmsOptionsHook } from "@codee-sh/medusa-plugin-cms/admin-extensions"
+   import { defineCmsOptionsHook } from "@mostrajs/cms/admin-extensions"
    import { useProductOptions } from "./use-product-options"
 
    defineCmsOptionsHook("products", useProductOptions)
@@ -102,7 +102,7 @@ The config reaches the Admin as JSON, so it cannot hold a function. `options: { 
 
    ```ts
    // src/admin/cms/use-product-options.ts
-   import type { CmsOptionsHookInput } from "@codee-sh/medusa-plugin-cms/admin-extensions"
+   import type { CmsOptionsHookInput } from "@mostrajs/cms/admin-extensions"
    import { useComboboxData } from "@medusajs/dashboard/hooks"
    import { sdk } from "../lib/client"
 
@@ -176,7 +176,7 @@ The start fails on a relationship that sits on no `belongsTo`'s foreign key, has
 - **What a write checks.** A create, a save, a publish, a restore and the Admin's live validation refuse an id that names no live document of `relationTo`, at the field. A draft of the target is a live document, so it may be picked. To allow published targets only, list only those in your hook and refuse a draft in a [`validate` hook](./validation.md#your-own-rules-at-a-write).
 - **How the Admin picks.** With `options: { hook }` the field is drawn as that hook's combobox, as [above](#options-from-a-hook): register a hook that lists the target's documents, from your own route or the plugin's `GET /admin/cms/collections/<slug>/documents`, which takes `q`, `status`, `limit` and `offset`. Without a hook the field is a text input of the id. Either way the server checks the value as a relation.
 - **How the Admin shows it.** A read-only view and a table column show the target's title, its `useAsTitle` field, or its id without one; an id that names no document any more shows as `<id> (not found)`.
-- **When the target is deleted or unpublished.** The plugin refuses neither for a reference, and leaves the key as it is: a delete is a soft delete, so the database's foreign key rule never runs. The next write that holds the id is refused at the field until it is changed. To keep a document in use from going away, refuse its delete and unpublish in a `validate` hook, reading what points at it with `listCmsReferencesWorkflow` from `@codee-sh/medusa-plugin-cms/workflows`, or the Admin route `GET /admin/cms/collections/:collection/documents/:id/references`. Both answer the live rows that point at the document, of any collection, the document itself left out: `{ references: [{ collection, field, id }] }` from the route.
+- **When the target is deleted or unpublished.** The plugin refuses neither for a reference, and leaves the key as it is: a delete is a soft delete, so the database's foreign key rule never runs. The next write that holds the id is refused at the field until it is changed. To keep a document in use from going away, refuse its delete and unpublish in a `validate` hook, reading what points at it with `listCmsReferencesWorkflow` from `@mostrajs/cms/workflows`, or the Admin route `GET /admin/cms/collections/:collection/documents/:id/references`. Both answer the live rows that point at the document, of any collection, the document itself left out: `{ references: [{ collection, field, id }] }` from the route.
 - **What the store API returns.** The id, as stored, under the field's key. The storefront reads the target from its own collection's store route, which serves published documents only, and treats one it cannot read as missing.
 
 ## Text, links and safe output
@@ -187,7 +187,7 @@ A link belongs in a `url` field, on a text column:
 
 ```ts
 // src/cms/config.ts
-import { defineConfig } from "@codee-sh/medusa-plugin-cms"
+import { defineConfig } from "@mostrajs/cms"
 
 export const cmsConfig = defineConfig({
   // ...module, collections
@@ -212,7 +212,7 @@ A relative link starts with `/`, `#` or `?`. A link with a space, a backslash or
 In the storefront, pass every stored link through `sanitizeUrl`, which answers `#` for one the policy refuses - a link saved before the policy narrowed, or written around the plugin. It checks against the default policy, or against the one you pass as its second argument:
 
 ```tsx
-import { sanitizeUrl } from "@codee-sh/medusa-plugin-cms/shared"
+import { sanitizeUrl } from "@mostrajs/cms/shared"
 
 <a href={sanitizeUrl(block.cta_href)}>{block.cta_label}</a>
 ```
@@ -231,7 +231,7 @@ A rich text field works in a collection and in a block. A table cannot show it a
 
 ### Features
 
-What the editor offers, and what a save accepts, is the field's features. Each one is made by a factory exported from `@codee-sh/medusa-plugin-cms`:
+What the editor offers, and what a save accepts, is the field's features. Each one is made by a factory exported from `@mostrajs/cms`:
 
 | Factory | Key | What it allows |
 |---|---|---|
@@ -255,7 +255,7 @@ import {
   ItalicFeature,
   LinkFeature,
   defineConfig,
-} from "@codee-sh/medusa-plugin-cms"
+} from "@mostrajs/cms"
 
 export const cmsConfig = defineConfig({
   // ...module, collections
@@ -311,7 +311,7 @@ A document without text - an empty paragraph, or only line breaks - is stored as
 
 The store API returns the document as an object, `{ root: { type: "root", children: [...] } }`, in the node shapes of the Lexical editor: `paragraph`, `heading` with its `tag`, `quote`, `list` with its `listType` (`bullet` or `number`) and its `listitem`s, `link` and `autolink` with their `url` and `target`, `linebreak`, and `text` with its `text` and its `format`, bit `1` for bold and `2` for italic. Render each node your storefront knows, and pass every link's `url` through `sanitizeUrl` with the field's policy.
 
-`@codee-sh/medusa-plugin-cms/shared` holds the helpers, which run in a browser:
+`@mostrajs/cms/shared` holds the helpers, which run in a browser:
 
 - `parseRichText(value)` turns what a field holds into a document: a document as it is, the column's JSON parsed, plain text as one paragraph per line, or `null` for nothing. A column that held plain text before its field became rich text reads so too.
 - `formatPlainText(document)` writes the text without its formatting, one line per block and per list item, such as for a meta description; an empty text for `null`.

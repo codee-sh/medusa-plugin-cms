@@ -47,7 +47,7 @@ import {
   deleteCmsDocumentWorkflow,
   listCmsReferencesWorkflow,
   unpublishCmsDocumentWorkflow,
-} from "@codee-sh/medusa-plugin-cms/workflows"
+} from "@mostrajs/cms/workflows"
 
 // A page another document links to stays published and in place.
 const validatePageNotInUse = async (
@@ -82,4 +82,4 @@ unpublishCmsDocumentWorkflow.hooks.validate(async ({ collection, document }, { c
 - **One handler per hook.** Medusa takes one, so combine your rules in it. A rule two writes share - a page in use, refused at an unpublish and at a delete - is one function of yours called from both, as above.
 - **The error.** Throw a `MedusaError`, `NOT_ALLOWED` for a rule: the route answers `400` and the Admin shows its message in the toast. The message is yours, in your editors' language.
 - **It runs in the request.** Keep it to a check. A side effect after a write belongs in a subscriber to the `cms.document.*` events.
-- **One copy of the plugin.** The handler attaches to the workflow you import. Import it from `@codee-sh/medusa-plugin-cms/workflows`, resolved to the copy Medusa loads: a second copy of the package in `node_modules` takes the handler without an error, and the plugin's routes never run it.
+- **One copy of the plugin.** The handler attaches to the workflow you import. Import it from `@mostrajs/cms/workflows`, resolved to the copy Medusa loads: a second copy of the package in `node_modules` takes the handler without an error, and the plugin's routes never run it.

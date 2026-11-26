@@ -1,16 +1,20 @@
-# @codee-sh/medusa-plugin-cms
+# @mostrajs/cms
 
-## 0.1.1
+## Published as `@codee-sh/medusa-plugin-cms`
 
-### Patch Changes
+The same plugin, under its first name, up to `0.1.1`. That package is deprecated; `@mostrajs/cms` continues it.
 
-- [#5](https://github.com/codee-sh/medusa-plugin-cms/pull/5) [`625f645`](https://github.com/codee-sh/medusa-plugin-cms/commit/625f6456142d782868a86fa9e95b648d1ac8d97a) Thanks [@kriss145](https://github.com/kriss145)! - The package holds the compiled plugin again. `0.1.0` was published without its build - only its type declarations - so Medusa could not load it; install `0.1.1` or later instead.
+### 0.1.1
 
-## 0.1.0
+#### Patch Changes
 
-### Minor Changes
+- [#5](https://github.com/mostrajs/cms/pull/5) [`625f645`](https://github.com/mostrajs/cms/commit/625f6456142d782868a86fa9e95b648d1ac8d97a) Thanks [@kriss145](https://github.com/kriss145)! - The package holds the compiled plugin again. `0.1.0` was published without its build - only its type declarations - so Medusa could not load it; install `0.1.1` or later instead.
 
-- [#1](https://github.com/codee-sh/medusa-plugin-cms/pull/1) [`2de6562`](https://github.com/codee-sh/medusa-plugin-cms/commit/2de65620c44e5e0f453a38f7dc119f674ba41419) Thanks [@kriss145](https://github.com/kriss145)! - The first public release: a CMS inside your Medusa v2 project, with content modelled as Medusa data models, edited in Medusa Admin and served through the store API.
+### 0.1.0
+
+#### Minor Changes
+
+- [#1](https://github.com/mostrajs/cms/pull/1) [`2de6562`](https://github.com/mostrajs/cms/commit/2de65620c44e5e0f453a38f7dc119f674ba41419) Thanks [@kriss145](https://github.com/kriss145)! - The first public release: a CMS inside your Medusa v2 project, with content modelled as Medusa data models, edited in Medusa Admin and served through the store API.
 
   **Features**
 
@@ -38,18 +42,18 @@
   - `npm install @codee-sh/medusa-plugin-cms`
   - Write a module with your content models and a CMS config with `defineConfig`, and register the plugin with `options: { config }` in `medusa-config.ts`
   - Run `npx medusa db:generate <your module>` and `npx medusa db:migrate`
-  - The whole setup is in the [README](https://github.com/codee-sh/medusa-plugin-cms/tree/v0.1.0#basic-setup)
+  - The whole setup is in the [README](https://github.com/mostrajs/cms/tree/medusa-plugin-cms-v0.1.0#basic-setup)
 
   **Documentation**
 
-  - [Models](https://github.com/codee-sh/medusa-plugin-cms/blob/v0.1.0/docs/models.md)
-  - [Collections, drafts and singletons](https://github.com/codee-sh/medusa-plugin-cms/blob/v0.1.0/docs/collections.md)
-  - [Blocks and areas](https://github.com/codee-sh/medusa-plugin-cms/blob/v0.1.0/docs/blocks.md)
-  - [Fields](https://github.com/codee-sh/medusa-plugin-cms/blob/v0.1.0/docs/fields.md)
-  - [Media](https://github.com/codee-sh/medusa-plugin-cms/blob/v0.1.0/docs/media.md)
-  - [Validation](https://github.com/codee-sh/medusa-plugin-cms/blob/v0.1.0/docs/validation.md)
-  - [The Admin](https://github.com/codee-sh/medusa-plugin-cms/blob/v0.1.0/docs/admin.md)
-  - [Field components](https://github.com/codee-sh/medusa-plugin-cms/blob/v0.1.0/docs/field-components.md)
-  - [Translations](https://github.com/codee-sh/medusa-plugin-cms/blob/v0.1.0/docs/translations.md)
-  - [Store API](https://github.com/codee-sh/medusa-plugin-cms/blob/v0.1.0/docs/store-api.md)
-  - [Workflows and events](https://github.com/codee-sh/medusa-plugin-cms/blob/v0.1.0/docs/workflows.md)
+  - [Models](https://github.com/mostrajs/cms/blob/medusa-plugin-cms-v0.1.0/docs/models.md)
+  - [Collections, drafts and singletons](https://github.com/mostrajs/cms/blob/medusa-plugin-cms-v0.1.0/docs/collections.md)
+  - [Blocks and areas](https://github.com/mostrajs/cms/blob/medusa-plugin-cms-v0.1.0/docs/blocks.md)
+  - [Fields](https://github.com/mostrajs/cms/blob/medusa-plugin-cms-v0.1.0/docs/fields.md)
+  - [Media](https://github.com/mostrajs/cms/blob/medusa-plugin-cms-v0.1.0/docs/media.md)
+  - [Validation](https://github.com/mostrajs/cms/blob/medusa-plugin-cms-v0.1.0/docs/validation.md)
+  - [The Admin](https://github.com/mostrajs/cms/blob/medusa-plugin-cms-v0.1.0/docs/admin.md)
+  - [Field components](https://github.com/mostrajs/cms/blob/medusa-plugin-cms-v0.1.0/docs/field-components.md)
+  - [Translations](https://github.com/mostrajs/cms/blob/medusa-plugin-cms-v0.1.0/docs/translations.md)
+  - [Store API](https://github.com/mostrajs/cms/blob/medusa-plugin-cms-v0.1.0/docs/store-api.md)
+  - [Workflows and events](https://github.com/mostrajs/cms/blob/medusa-plugin-cms-v0.1.0/docs/workflows.md)

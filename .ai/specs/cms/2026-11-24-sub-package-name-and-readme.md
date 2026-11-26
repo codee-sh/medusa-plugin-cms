@@ -38,6 +38,19 @@ directory and the GitHub repository share. Nothing in the plugin's behaviour cha
   Both belong to [sub-release-process](./2026-11-24-sub-release-process.md); this sub-spec only keeps
   the pending changesets valid under the new name.
 
+- **Mostra, `@mostrajs/cms`** (user, 2026-11-26; replaces the name of 2026-11-24). The plugin grows
+  into a product of its own, "Mostra for Medusa.js", the first of a family of tools inside Medusa Admin,
+  so it takes a brand instead of a descriptive name, as Payload names its CMS. The package is
+  `@mostrajs/cms` under the npm scope and GitHub organisation `mostrajs`, the repository `mostrajs/cms`
+  (moved there by the user from `codee-sh/medusa-plugin-cms`, which redirects). It starts at `0.1.0`
+  (user, over `0.2.0`), through the same placeholder `0.0.1` and trusted publisher as the first name;
+  the tags `v0.1.0` and `v0.1.1` of the first name become `medusa-plugin-cms-v0.1.0` and
+  `medusa-plugin-cms-v0.1.1`, so `v<version>` belongs to the new package. `@codee-sh/medusa-plugin-cms`
+  is deprecated with a pointer to `@mostrajs/cms`. Kept: the keyword `medusa-plugin-cms` (Medusa's
+  category), the Admin text namespace `medusa-plugin-cms`, the module key `cms`, the routes and the
+  test container's name - none of them is the package's name. The codee-skills naming rule
+  (`@codee-sh/medusa-plugin-<domain>`, no brand names) needs an exception for Mostra, in codee-skills.
+
 ## Problem
 
 - The name `@codee-sh/medusa-plugin-content-cms` repeats itself and departs from the other plugins'
@@ -278,6 +291,16 @@ walk through the Content screens in the first host.
 
 **Exit gate:** `npm pack --dry-run`; the user creates the GitHub repository with the texts above.
 
+### Phase 4 - Mostra
+
+**Goal:** the plugin is published as `@mostrajs/cms` `0.1.0`, and `@codee-sh/medusa-plugin-cms` points
+to it.
+
+**Prerequisites:** Phase 3; the repository at `mostrajs/cms`.
+
+**Exit gate:** `@mostrajs/cms@0.1.0` on npm with provenance, tagged `v0.1.0`; the old package
+deprecated; the first host on the new name.
+
 ## Implementation Plan
 
 ### Phase 1
@@ -316,6 +339,38 @@ walk through the Content screens in the first host.
    - **Verification:** a search of the host finds no old name outside `.yalc/` and `node_modules/`; the
      host's CMS config unit test passes; the user walks through the Content screens.
 
+### Phase 4
+
+1. **P4.1 - The new name in the plugin**
+   - **Outcome:** the package, its links, its docs and its release note name `@mostrajs/cms`.
+   - **Areas:** `package.json` (`name`, `version` back to `0.0.1`, `repository`, `homepage`, `bugs`);
+     `.changeset/config.json` (`repo`); a minor changeset, the `0.1.0` release note with how to move
+     from the first name; `CHANGELOG.md` (the first name's entries under a section of their own, their
+     links on `mostrajs/cms` and the renamed tags); `README.md` (title **Mostra**, a section on moving
+     from the first name), `docs/`, `AGENTS.md`, `SDLC.md`; `src/admin-extensions/registry.ts` (the
+     store key), the two Lexical extensions' names, a JSDoc in `src/lib/config/types.ts`; the examples
+     in the main spec, `sub-collections-and-documents` and `sub-workflow-hooks`.
+   - **Changes:** `@codee-sh/medusa-plugin-cms` to `@mostrajs/cms`, `codee-sh/medusa-plugin-cms` to
+     `mostrajs/cms`; what Decisions keeps stays.
+   - **Verification:** a search for `@codee-sh/medusa-plugin-cms` outside `CHANGELOG.md`, the README's
+     moving section, the changeset, `SDLC.md`, the lessons, `yarn.lock` and the specs' history finds
+     nothing; the gate.
+
+2. **P4.2 - The user's release**
+   - **Outcome:** `@mostrajs/cms@0.1.0` on npm, the old package deprecated.
+   - **Changes:** the user runs `yarn install` (the workspace's name in `yarn.lock`), points `origin` at
+     `mostrajs/cms`, renames the tags and releases `v0.1.0` and `v0.1.1` to `medusa-plugin-cms-v*`,
+     publishes the placeholder `@mostrajs/cms@0.0.1` by hand and deprecates it, sets the trusted
+     publisher (`mostrajs`, `cms`, `release.yml`), merges this branch and then the release PR, and
+     deprecates `@codee-sh/medusa-plugin-cms`.
+   - **Verification:** `npm view @mostrajs/cms version` answers `0.1.0`; the release `v0.1.0` carries
+     the changeset's text.
+
+3. **P4.3 - The first host on the new name**
+   - **Outcome:** the first host's backend resolves and imports `@mostrajs/cms`.
+   - **Areas:** as P1.3.
+   - **Verification:** as P1.3.
+
 ## Short Tracker
 
 - `done` - P1.1 (2026-11-25, in the new folder): the name replaced in 16 files; `page.tsx` keeps a
@@ -351,3 +406,6 @@ walk through the Content screens in the first host.
   Medusa's plugin template has it. `npm pack --dry-run` shows the name, the README and the licence. The
   user runs `yarn install` for `yarn.lock`. The same rule in `codee-medusa-plugin-delivery`,
   `references/agents-rules.md`, follows in `sub-release-process` Phase 4.
+- `done` - P4.1 (2026-11-26, branch `chore/rename-mostra`): the name replaced as P4.1 lists; the
+  Admin text namespace, the keyword and the test container kept (Decisions).
+- `pending` - P4.2, P4.3.

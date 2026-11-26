@@ -21,7 +21,7 @@ yarn dev                    # recompiles and pushes on every change
 In the project, once:
 
 ```bash
-npx medusa plugin:add @codee-sh/medusa-plugin-cms
+npx medusa plugin:add @mostrajs/cms
 ```
 
 Register the plugin in the project's `medusa-config.ts` as the README's [Basic setup](../README.md#basic-setup) shows, and start the project with `medusa develop`.
@@ -33,7 +33,7 @@ Register the plugin in the project's `medusa-config.ts` as the README's [Basic s
 - Do not run `yarn build` while `yarn dev` runs. A build replaces `.medusa/server` with a bundled Admin and cuts the link to the source until `yarn dev` starts again.
 - `yarn dev` writes no type declarations. When a change to a config type must reach the project's typecheck, run `npx tsc -p tsconfig.json --emitDeclarationOnly`, then `npx yalc publish --push --no-scripts`.
 - A push carries what `yarn dev` last compiled. With `yarn dev` stopped, start it before pushing.
-- The project's Vite keeps its own pre-bundled copy of `@codee-sh/medusa-plugin-cms/admin-extensions`. After a change there, or after `yarn dev` restarts, stop the project, delete its `node_modules/.vite`, and start it again.
+- The project's Vite keeps its own pre-bundled copy of `@mostrajs/cms/admin-extensions`. After a change there, or after `yarn dev` restarts, stop the project, delete its `node_modules/.vite`, and start it again.
 
 ## Before you open a pull request
 

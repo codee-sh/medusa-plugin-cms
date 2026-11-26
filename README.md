@@ -1,6 +1,6 @@
-# Medusa CMS
+# Mostra
 
-`@codee-sh/medusa-plugin-cms`
+`@mostrajs/cms`
 
 CMS for Medusa v2: model content as Medusa data models, edit it in Medusa Admin with drafts, versions and blocks, and serve it through the store API.
 
@@ -29,9 +29,9 @@ Your content lives in the same project as your store - its database, its Admin, 
 ## Installation
 
 ```bash
-npm install @codee-sh/medusa-plugin-cms
+npm install @mostrajs/cms
 # or
-yarn add @codee-sh/medusa-plugin-cms
+yarn add @mostrajs/cms
 ```
 
 ## Basic setup
@@ -63,7 +63,7 @@ export default Module(CONTENT_MODULE, { service: ContentModuleService })
 
 ```typescript
 // src/cms/config.ts
-import { defineConfig } from "@codee-sh/medusa-plugin-cms"
+import { defineConfig } from "@mostrajs/cms"
 import { z } from "@medusajs/framework/zod"
 import { CONTENT_MODULE, ContentPage } from "../modules/content"
 
@@ -98,7 +98,7 @@ module.exports = defineConfig({
   modules: [{ resolve: "./src/modules/content" }],
   plugins: [
     {
-      resolve: "@codee-sh/medusa-plugin-cms",
+      resolve: "@mostrajs/cms",
       options: { config: cmsConfig },
     },
   ],
@@ -113,6 +113,19 @@ npx medusa db:migrate
 ```
 
 The pages appear under **Content** in the Admin, and the store API serves them at `/store/cms/page`. Continue with the guides under [Documentation](#documentation).
+
+## Moving from `@codee-sh/medusa-plugin-cms`
+
+The plugin was published as `@codee-sh/medusa-plugin-cms` up to `0.1.1`; that package is deprecated. Nothing changes but the name: no data, table, route or config key.
+
+**Swap the package:**
+
+```bash
+npm uninstall @codee-sh/medusa-plugin-cms
+npm install @mostrajs/cms
+```
+
+**Rename every import and the plugin's `resolve`** in `medusa-config.ts`: `@codee-sh/medusa-plugin-cms` becomes `@mostrajs/cms`, its `/workflows`, `/admin-extensions` and `/shared` entry points with it. Then delete `node_modules/.vite` before starting the Admin, so Vite drops its copy of the old package.
 
 ## Documentation
 
@@ -132,10 +145,10 @@ The pages appear under **Content** in the Admin, and the store API serves them a
 
 ## Exports
 
-- `@codee-sh/medusa-plugin-cms` - `defineConfig`, `validateConfig`, the config types, the media providers (`FileMediaProvider`, `AbstractCmsMediaProvider`), the rich text features and the document events
-- `@codee-sh/medusa-plugin-cms/workflows` - the CMS workflows and steps, for your own routes and subscribers
-- `@codee-sh/medusa-plugin-cms/admin-extensions` - `defineCmsFieldComponent`, `defineCmsOptionsHook`, `useDocumentValue`, `useBlockPlace` and their types, for your Admin
-- `@codee-sh/medusa-plugin-cms/shared` - code for both sides, such as `sanitizeUrl`, `normalizeSlug` and the rich text helpers
+- `@mostrajs/cms` - `defineConfig`, `validateConfig`, the config types, the media providers (`FileMediaProvider`, `AbstractCmsMediaProvider`), the rich text features and the document events
+- `@mostrajs/cms/workflows` - the CMS workflows and steps, for your own routes and subscribers
+- `@mostrajs/cms/admin-extensions` - `defineCmsFieldComponent`, `defineCmsOptionsHook`, `useDocumentValue`, `useBlockPlace` and their types, for your Admin
+- `@mostrajs/cms/shared` - code for both sides, such as `sanitizeUrl`, `normalizeSlug` and the rich text helpers
 
 ## License
 
