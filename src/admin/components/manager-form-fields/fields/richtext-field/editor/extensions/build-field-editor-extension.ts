@@ -47,7 +47,7 @@ export const buildFieldEditorExtension = ({
   const linkFeature = findRichTextFeature(settings.features, "link")
 
   return defineExtension({
-    name: "@codee-sh/medusa-plugin-cms/field-editor",
+    name: "@mostrajs/cms/field-editor",
     namespace: name,
     nodes: NODES,
     theme: EDITOR_THEME,

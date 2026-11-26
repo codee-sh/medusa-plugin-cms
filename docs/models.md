@@ -24,7 +24,7 @@ export default Module(CONTENT_MODULE, { service: ContentModuleService })
 
 ```ts
 // src/cms/config.ts
-import { defineConfig } from "@codee-sh/medusa-plugin-cms"
+import { defineConfig } from "@mostrajs/cms"
 import { CONTENT_MODULE } from "../modules/content"
 
 export const cmsConfig = defineConfig({

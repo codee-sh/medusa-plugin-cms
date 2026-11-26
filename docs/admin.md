@@ -101,7 +101,7 @@ The plugin's pages have widget zones of their own, so you add a widget to them a
 
 Every route's page shares the two route zones, and every document's page the two document zones, so a widget checks the slug in its `data` and returns `null` on the pages it does not belong to. The page's Customize Layout arranges your widgets; the plugin's own sections stay where the config puts them.
 
-What a widget gets as `data`, both types exported from `@codee-sh/medusa-plugin-cms/admin-extensions`:
+What a widget gets as `data`, both types exported from `@mostrajs/cms/admin-extensions`:
 
 - **`CmsRouteWidgetData`** - `route`, its `slug` and `label`, and `collections`, the collections the page shows in its order, each with its `slug`, its `labels` (`singular` and `plural`) and `singleton`. A singleton also carries its `document`, the document's columns, or `null` before its first save; a list carries none, so a widget that needs its documents reads them itself.
 - **`CmsDocumentWidgetData`** - `collection`, its `slug` and `labels`, and `document`, the document's `id` and columns as its page read them. That is the stored row: for a published document with changes waiting, the published content, not the draft, and never what the editor is typing.
@@ -123,7 +123,7 @@ This widget shows a page's storefront address in its document's page:
 import { defineWidgetConfig } from "@medusajs/admin-sdk"
 import type { DetailWidgetProps } from "@medusajs/framework/types"
 import { Container, Heading, Text } from "@medusajs/ui"
-import type { CmsDocumentWidgetData } from "@codee-sh/medusa-plugin-cms/admin-extensions"
+import type { CmsDocumentWidgetData } from "@mostrajs/cms/admin-extensions"
 
 const PageAddressWidget = ({
   data,

@@ -102,10 +102,12 @@ A failed publish job is re-run: `changeset publish` skips a version npm already 
 deprecated with `npm deprecate` and fixed in a patch.
 
 **The first version.** npm publishes a package's first version only with a credential, never through
-OIDC, and its trusted publisher can be set only on a package that exists. So `0.0.1` was published once
+OIDC, and its trusted publisher can be set only on a package that exists. So `0.0.1` is published once
 by hand, from the maintainer's machine, and deprecated as a placeholder; the trusted publisher
-(`codee-sh`, `medusa-plugin-cms`, `release.yml`) is set on npm right before the release PR of `0.1.0` is
-merged, as npm expects its first publish within 2 days. No npm token is stored anywhere.
+(`mostrajs`, `cms`, `release.yml`) is set on npm right before the release PR of `0.1.0` is merged, as
+npm expects its first publish within 2 days. No npm token is stored anywhere. The plugin was published
+as `@codee-sh/medusa-plugin-cms` up to `0.1.1` in the same way; that package is deprecated, and its
+tags carry the prefix `medusa-plugin-cms-`, so `v<version>` belongs to `@mostrajs/cms`.
 
 ## Amending this process
 

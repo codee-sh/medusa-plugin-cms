@@ -10,7 +10,7 @@ The texts a config gives the Admin - collection and block labels, field labels a
 - **a function given `{ t }`**, run once at start, whose `t(key, options?)` names a translation the Admin shows in the editor's language.
 
 ```ts
-import { type CmsText, defineConfig as defineCmsConfig } from "@codee-sh/medusa-plugin-cms"
+import { type CmsText, defineConfig as defineCmsConfig } from "@mostrajs/cms"
 
 /** A text of the project's own namespace. */
 const text =

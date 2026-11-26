@@ -445,3 +445,7 @@ its release note. Steps written when Phase 2 and `sub-package-name-and-readme` a
   `".medusa/server/**"`, a pack check before publishing, and a patch changeset for `0.1.1`. Next: its
   release PR, then the user deprecates `0.1.0`. For Phase 4, the delivery skill: CLI v3, one publish
   job with Yarn, the `files` glob, the pack check.
+- `done` - `0.1.1` (2026-11-25): the release PR #6 merged, `0.1.1` published with its build, tagged and
+  released. The package then moves to `@mostrajs/cms` and the repository to `mostrajs/cms`
+  ([sub-package-name-and-readme](./2026-11-24-sub-package-name-and-readme.md), Phase 4): the same
+  placeholder and trusted publisher steps, for the new name.

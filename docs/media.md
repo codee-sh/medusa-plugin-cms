@@ -17,7 +17,7 @@ Name the provider once per config, in `media`. There is no default: a config wit
 
 ```ts
 // src/cms/config.ts
-import { defineConfig, FileMediaProvider } from "@codee-sh/medusa-plugin-cms"
+import { defineConfig, FileMediaProvider } from "@mostrajs/cms"
 
 export const cmsConfig = defineConfig({
   module: CONTENT_MODULE,
@@ -159,7 +159,7 @@ import {
   type CmsMediaListQuery,
   type CmsMediaStore,
   type CmsMediaUpload,
-} from "@codee-sh/medusa-plugin-cms"
+} from "@mostrajs/cms"
 import { Modules } from "@medusajs/framework/utils"
 import AssetModuleService, { ASSET_MODULE, type Asset } from "../modules/asset/service"
 
@@ -260,7 +260,7 @@ Name it in the config. Its `stores` lists `"url"` too, so a field may store the 
 
 ```ts
 // src/cms/config.ts
-import { defineConfig } from "@codee-sh/medusa-plugin-cms"
+import { defineConfig } from "@mostrajs/cms"
 import { AssetMediaProvider } from "./asset-media-provider"
 
 export const cmsConfig = defineConfig({

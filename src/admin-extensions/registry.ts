@@ -21,7 +21,7 @@ import type {
  * entries.
  */
 export const ADMIN_EXTENSIONS_STORE_KEY = Symbol.for(
-  "@codee-sh/medusa-plugin-cms/admin-extensions"
+  "@mostrajs/cms/admin-extensions"
 )
 
 /** The entries a host registers, one map per kind, each by the name a config gives. */

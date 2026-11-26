@@ -92,7 +92,7 @@ const registerFeatureGuard = (
  * `LinkExtension`'s `validateUrl`.
  */
 export const FeatureGuardExtension = defineExtension({
-  name: "@codee-sh/medusa-plugin-cms/feature-guard",
+  name: "@mostrajs/cms/feature-guard",
   config: safeCast<FeatureGuardConfig>({ features: [] }),
   register: registerFeatureGuard,
 })

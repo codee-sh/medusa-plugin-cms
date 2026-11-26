@@ -2,7 +2,7 @@
 
 How to use the CMS from your own backend code: the workflows and steps you run, the events you subscribe to, the hook you refuse a write from, and the cache the writes clear; what the store answers over HTTP is in [The store API](./store-api.md), and drafts and versions themselves are in [Collections, drafts and singletons](./collections.md#drafts-and-versions).
 
-## What `@codee-sh/medusa-plugin-cms/workflows` exports
+## What `@mostrajs/cms/workflows` exports
 
 Every workflow the plugin's own routes run, and the steps they are built from. The Admin and the store go through the same workflows, so a document your code writes is checked, versioned and announced exactly as an editor's is. A workflow of a collection's documents takes the collection's slug as `collection`, and refuses an unknown one with `NOT_FOUND`.
 
@@ -65,7 +65,7 @@ import {
 import {
   getCmsDocumentStep,
   listCmsReferencesStep,
-} from "@codee-sh/medusa-plugin-cms/workflows"
+} from "@mostrajs/cms/workflows"
 
 type GetPageUsageInput = { id: string }
 
@@ -91,7 +91,7 @@ Run a workflow with the request's container, `req.scope`, as Medusa's own routes
 ```ts
 // src/api/store/blog/latest/route.ts
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
-import { listPublishedCmsDocumentsWorkflow } from "@codee-sh/medusa-plugin-cms/workflows"
+import { listPublishedCmsDocumentsWorkflow } from "@mostrajs/cms/workflows"
 
 export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
   const { result } = await listPublishedCmsDocumentsWorkflow(req.scope).run({
@@ -117,7 +117,7 @@ import type {
 import {
   createCmsDocumentWorkflow,
   publishCmsDocumentWorkflow,
-} from "@codee-sh/medusa-plugin-cms/workflows"
+} from "@mostrajs/cms/workflows"
 
 type ImportPostBody = { title: string; excerpt: string }
 
@@ -176,7 +176,7 @@ import type { SubscriberArgs, SubscriberConfig } from "@medusajs/framework"
 import {
   DocumentEvents,
   type DocumentUpdatedEventData,
-} from "@codee-sh/medusa-plugin-cms"
+} from "@mostrajs/cms"
 
 export default async function cmsPageChanged({
   event: { data },

@@ -236,5 +236,5 @@ Errors come in Medusa's shape, `{ type, message }`:
 
 - **Caching.** When your project runs Medusa's Caching Module, the store routes read through it, and every write the CMS makes - a save, a publish, an unpublish, a delete - clears what it touched, so a publish is served on the next request. Without the module every read goes to the database.
 - **Your own data on a document.** A path the CMS does not know, such as a module link of your own, is not selectable by default. A middleware of yours on `/store/cms/*` can add it to `req.allowed`, as for Medusa's own store routes; the CMS then reads it with the document and answers it under its name.
-- **Reading content in your own code.** The routes run `listPublishedCmsDocumentsWorkflow` and `getPublishedCmsDocumentWorkflow`, exported from `@codee-sh/medusa-plugin-cms/workflows`, so your own route or subscriber gets the same answer - see [Workflows](./workflows.md).
+- **Reading content in your own code.** The routes run `listPublishedCmsDocumentsWorkflow` and `getPublishedCmsDocumentWorkflow`, exported from `@mostrajs/cms/workflows`, so your own route or subscriber gets the same answer - see [Workflows](./workflows.md).
 - **Links in content.** Pass every stored link through `sanitizeUrl` before you render it - see [Fields](./fields.md#text-links-and-safe-output).

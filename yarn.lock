@@ -1458,64 +1458,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codee-sh/medusa-plugin-cms@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "@codee-sh/medusa-plugin-cms@workspace:."
-  dependencies:
-    "@changesets/changelog-github": "npm:^1.0.1"
-    "@changesets/cli": "npm:^3.0.3"
-    "@hookform/resolvers": "npm:6.0.0"
-    "@lexical/extension": "npm:0.53.0"
-    "@lexical/history": "npm:0.53.0"
-    "@lexical/link": "npm:0.53.0"
-    "@lexical/list": "npm:0.53.0"
-    "@lexical/react": "npm:0.53.0"
-    "@lexical/rich-text": "npm:0.53.0"
-    "@lexical/selection": "npm:0.53.0"
-    "@medusajs/admin-sdk": "npm:2.22.7"
-    "@medusajs/cli": "npm:2.22.7"
-    "@medusajs/dashboard": "npm:2.22.7"
-    "@medusajs/eslint-plugin": "npm:2.22.7"
-    "@medusajs/framework": "npm:2.22.7"
-    "@medusajs/icons": "npm:2.22.7"
-    "@medusajs/medusa": "npm:2.22.7"
-    "@medusajs/test-utils": "npm:2.22.7"
-    "@medusajs/ui": "npm:4.2.14"
-    "@swc/core": "npm:^1.15.47"
-    "@swc/jest": "npm:^0.2.39"
-    "@types/jest": "npm:^29.5.14"
-    "@types/node": "npm:^20.0.0"
-    "@types/react": "npm:^18.3.2"
-    "@types/react-dom": "npm:^18.2.25"
-    eslint: "npm:^9.39.5"
-    jest: "npm:^29.7.0"
-    jiti: "npm:^2.0.0"
-    lexical: "npm:0.53.0"
-    prettier: "npm:3.9.10"
-    prop-types: "npm:^15.8.1"
-    react: "npm:18.3.1"
-    react-dom: "npm:18.3.1"
-    react-hook-form: "npm:7.83.0"
-    ts-node: "npm:^10.9.2"
-    typescript: "npm:^5.9.3"
-    vite: "npm:7.3.7"
-    yalc: "npm:^1.0.0-pre.53"
-    zod: "npm:4.6.6"
-  peerDependencies:
-    "@hookform/resolvers": ^6.0.0
-    "@medusajs/admin-sdk": ^2.22.7
-    "@medusajs/cli": ^2.22.7
-    "@medusajs/dashboard": ^2.22.7
-    "@medusajs/framework": ^2.22.7
-    "@medusajs/icons": ^2.22.7
-    "@medusajs/medusa": ^2.22.7
-    "@medusajs/ui": ^4.2.14
-    react: ^18.3.1
-    react-hook-form: ^7.83.0
-    zod: ^4.6.6
-  languageName: unknown
-  linkType: soft
-
 "@colors/colors@npm:1.6.0":
   version: 1.6.0
   resolution: "@colors/colors@npm:1.6.0"
@@ -4591,6 +4533,64 @@ __metadata:
   checksum: 10c0/52b113f65beb59c48f23783f3d3872f1e92a51028ae67e14e2de8efe7969323ddf2da99c59bee01946bddddd9f1c88553c08b0b5e32c511afd5bb49df3bd9d4c
   languageName: node
   linkType: hard
+
+"@mostrajs/cms@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@mostrajs/cms@workspace:."
+  dependencies:
+    "@changesets/changelog-github": "npm:^1.0.1"
+    "@changesets/cli": "npm:^3.0.3"
+    "@hookform/resolvers": "npm:6.0.0"
+    "@lexical/extension": "npm:0.53.0"
+    "@lexical/history": "npm:0.53.0"
+    "@lexical/link": "npm:0.53.0"
+    "@lexical/list": "npm:0.53.0"
+    "@lexical/react": "npm:0.53.0"
+    "@lexical/rich-text": "npm:0.53.0"
+    "@lexical/selection": "npm:0.53.0"
+    "@medusajs/admin-sdk": "npm:2.22.7"
+    "@medusajs/cli": "npm:2.22.7"
+    "@medusajs/dashboard": "npm:2.22.7"
+    "@medusajs/eslint-plugin": "npm:2.22.7"
+    "@medusajs/framework": "npm:2.22.7"
+    "@medusajs/icons": "npm:2.22.7"
+    "@medusajs/medusa": "npm:2.22.7"
+    "@medusajs/test-utils": "npm:2.22.7"
+    "@medusajs/ui": "npm:4.2.14"
+    "@swc/core": "npm:^1.15.47"
+    "@swc/jest": "npm:^0.2.39"
+    "@types/jest": "npm:^29.5.14"
+    "@types/node": "npm:^20.0.0"
+    "@types/react": "npm:^18.3.2"
+    "@types/react-dom": "npm:^18.2.25"
+    eslint: "npm:^9.39.5"
+    jest: "npm:^29.7.0"
+    jiti: "npm:^2.0.0"
+    lexical: "npm:0.53.0"
+    prettier: "npm:3.9.10"
+    prop-types: "npm:^15.8.1"
+    react: "npm:18.3.1"
+    react-dom: "npm:18.3.1"
+    react-hook-form: "npm:7.83.0"
+    ts-node: "npm:^10.9.2"
+    typescript: "npm:^5.9.3"
+    vite: "npm:7.3.7"
+    yalc: "npm:^1.0.0-pre.53"
+    zod: "npm:4.6.6"
+  peerDependencies:
+    "@hookform/resolvers": ^6.0.0
+    "@medusajs/admin-sdk": ^2.22.7
+    "@medusajs/cli": ^2.22.7
+    "@medusajs/dashboard": ^2.22.7
+    "@medusajs/framework": ^2.22.7
+    "@medusajs/icons": ^2.22.7
+    "@medusajs/medusa": ^2.22.7
+    "@medusajs/ui": ^4.2.14
+    react: ^18.3.1
+    react-hook-form: ^7.83.0
+    zod: ^4.6.6
+  languageName: unknown
+  linkType: soft
 
 "@msgpackr-extract/msgpackr-extract-darwin-arm64@npm:3.0.7":
   version: 3.0.7

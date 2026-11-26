@@ -179,7 +179,7 @@ export type FieldOption<TText = CmsText> = {
 
 /**
  * Options a hook of the host's Admin gives, registered under this name with `defineCmsOptionsHook` from
- * `@codee-sh/medusa-plugin-cms/admin-extensions`. The server checks only that the value is a
+ * `@mostrajs/cms/admin-extensions`. The server checks only that the value is a
  * text.
  */
 export type OptionsHookSource = {
