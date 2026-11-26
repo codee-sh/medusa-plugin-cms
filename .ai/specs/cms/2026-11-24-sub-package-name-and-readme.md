@@ -24,7 +24,7 @@ directory and the GitHub repository share. Nothing in the plugin's behaviour cha
 - **The folder too** (user, 2026-11-24; how, 2026-11-25). The folder, the package and the GitHub
   repository share the name `medusa-plugin-cms`. The folder is not moved: the public repository starts
   in a new folder `medusa-plugin-cms` beside this one, and this folder stays as the private archive
-  ([sub-release-process](./2026-11-24-sub-release-process.md), Phase 1). Phase 1 here runs in the new
+  (`sub-release-process` (removed), Phase 1). Phase 1 here runs in the new
   folder.
 - **Listed as an integration anyway** (user, 2026-11-24). Medusa's directory "primarily" features
   plugins that integrate a third-party service, and the plugin is a CMS of its own; it still carries
@@ -35,7 +35,7 @@ directory and the GitHub repository share. Nothing in the plugin's behaviour cha
   repository, written from what this sub-spec settles.
 - **The public repository starts without this repository's history** (user, 2026-11-24; one commit,
   2026-11-25): one clean commit, and one changeset for the first release in place of the pending ones.
-  Both belong to [sub-release-process](./2026-11-24-sub-release-process.md); this sub-spec only keeps
+  Both belong to `sub-release-process` (removed); this sub-spec only keeps
   the pending changesets valid under the new name.
 
 - **Mostra, `@mostrajs/cms`** (user, 2026-11-26; replaces the name of 2026-11-24). The plugin grows
@@ -170,7 +170,7 @@ copy of it, set once at creation.
 - **README and listing guidance in `codee-medusa-plugin-delivery`.** That skill is loaded once, to set
   a repository up; a README or a `docs/` file is written with every feature, so its guidance is a skill
   of its own (Decisions). A changeset's text stays with the release, in `codee-medusa-plugin-delivery`
-  ([sub-release-process](./2026-11-24-sub-release-process.md), Decisions).
+  (`sub-release-process` (removed), Decisions).
 
 ## Contracts
 
