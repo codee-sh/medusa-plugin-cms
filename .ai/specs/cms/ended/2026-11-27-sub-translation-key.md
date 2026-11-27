@@ -1,9 +1,9 @@
 # Translation Key
 
 **Date:** 2026-11-27
-**Status:** review
+**Status:** done
 **Area:** backend
-**Related:** [main-spec](./2026-11-04-main-spec.md)
+**Related:** [main-spec](../2026-11-04-main-spec.md)
 
 ## TLDR
 
@@ -100,7 +100,7 @@ An added export, a patch below 1.0 (AGENTS.md, "Plugin Contract").
 - [x] `translationKey` is exported from `@mostrajs/cms`, and a unit test proves it yields the translation
   `t` yields, with and without `ns`, and fails without a namespace.
 - [x] `docs/translations.md` and the README show it.
-- [ ] A host's labels show in the editor's language through it.
+- [x] A host's labels show in the editor's language through it.
 
 ## Phasing
 
@@ -138,8 +138,10 @@ An added export, a patch below 1.0 (AGENTS.md, "Plugin Contract").
 |---|---|
 | P1.1 | done |
 | P1.2 | done |
-| P1.3 | pending, after the release |
+| P1.3 | done |
 
 ## Changelog
 
 - 2026-11-27 - Drafted and implemented (user): the name `translationKey`, in `src/lib/config/`.
+- 2026-11-27 - Done (user): released in `0.1.2`. A host that installs `0.1.2` from npm imports
+  `translationKey` in place of its own helper, and its Admin shows the labels in English and Polish.
