@@ -1,5 +1,25 @@
 # @mostrajs/cms
 
+## 0.1.2
+
+### Patch Changes
+
+- [#17](https://github.com/mostrajs/cms/pull/17) [`d297ebd`](https://github.com/mostrajs/cms/commit/d297ebd4bf41798b7f54ddf318257fa8bfc56893) Thanks [@kriss145](https://github.com/kriss145)! - The Admin's forms, tabs and rich text editor look as intended in a project that installs the plugin from npm.
+
+  **Fixes**
+  - A form with tabs shows only the open tab's fields, where it showed every tab's fields at once.
+  - The rich text editor keeps its height when empty, its redo button shows a mirrored arrow, and a quote shows its left border.
+  - A link in the rich text editor takes Medusa's interactive colour on hover, in place of an underline the Admin never drew.
+  - A block's sections are divided by a line, with none above the first.
+
+- [#14](https://github.com/mostrajs/cms/pull/14) [`6d27584`](https://github.com/mostrajs/cms/commit/6d2758467d27349bb896ee3c78fec2941fe81582) Thanks [@kriss145](https://github.com/kriss145)! - The package's description on npm is shorter and matches the README: a CMS inside your Medusa v2 project, with content as data models, edited in the Admin and served by the Store API.
+
+- [#16](https://github.com/mostrajs/cms/pull/16) [`83d6e94`](https://github.com/mostrajs/cms/commit/83d6e947768dbb524ec717a4cefc81ec084e71bd) Thanks [@kriss145](https://github.com/kriss145)! - `translationKey(key, options?)` names a translation as a text of the config, in place of a `({ t }) => t(key)` function of your own.
+
+  **Features**
+  - `translationKey` is exported from `@mostrajs/cms` and takes the options of `t`, `ns` included: `label: translationKey("page.singular")`.
+  - The README's basic setup says that a label written as a string shows the same in every language, and links to the page on translations.
+
 ## 0.1.1
 
 ### Patch Changes
