@@ -9,29 +9,25 @@ Each text that your config gives the Admin takes one of two forms:
 - **A string** - the Admin shows it as written, in every language.
 - **A function given `{ t }`** - the plugin runs it once, when Medusa starts. The function calls `t(key, options?)` to name a translation, which the Admin shows in the editor's language.
 
+`translationKey(key, options?)` writes the function for you. `translationKey("page.singular")` is the same text as `({ t }) => t("page.singular")`, and it takes the same options as `t`.
+
 ```ts
 // src/cms/config.ts
-import { type CmsText, defineConfig as defineCmsConfig } from "@mostrajs/cms"
-
-/** A text of the project's own namespace. */
-const text =
-  (key: string): CmsText =>
-  ({ t }) =>
-    t(key)
+import { defineConfig as defineCmsConfig, translationKey } from "@mostrajs/cms"
 
 export default defineCmsConfig({
-  // The namespace `t` takes when it names none.
+  // The namespace a translation takes when it names none.
   admin: { translationNs: "content" },
   collections: [
     {
       slug: "page",
-      labels: { singular: text("page.singular"), plural: "Pages" },
+      labels: { singular: translationKey("page.singular"), plural: "Pages" },
       fields: {
-        title: { type: "text", label: text("page.fields.title") },
+        title: { type: "text", label: translationKey("page.fields.title") },
         // Medusa's own text, in its short form.
         created: {
           type: "date",
-          label: ({ t }) => t("fields.createdAt", { ns: "translation", context: "short" }),
+          label: translationKey("fields.createdAt", { ns: "translation", context: "short" }),
         },
       },
       // ...
@@ -39,6 +35,8 @@ export default defineCmsConfig({
   ],
 })
 ```
+
+Write the function yourself when a text needs more than one key, for example to choose between two keys.
 
 ### The texts a config gives the Admin
 
@@ -66,7 +64,7 @@ type CmsTranslate = (
 type TranslationOptions = Record<string, string | number | boolean>
 ```
 
-`t` takes the options of i18next:
+`t` and `translationKey` take the options of i18next:
 
 | Option | Type | Default | Description |
 |---|---|---|---|

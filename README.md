@@ -115,7 +115,11 @@ npx medusa db:generate content
 npx medusa db:migrate
 ```
 
-The pages appear under **Content** in the Admin, and the Store API serves them at `/store/cms/page`. Continue with the guides under [Documentation](#documentation).
+The pages appear under **Content** in the Admin, and the Store API serves them at `/store/cms/page`.
+
+The Admin shows a label written as a string the same in every language. To show it in the editor's language, give it a key with `translationKey`, as [Translations](./docs/translations.md) explains.
+
+Continue with the guides under [Documentation](#documentation).
 
 ## Documentation
 
@@ -135,7 +139,7 @@ The pages appear under **Content** in the Admin, and the Store API serves them a
 
 ## Exports
 
-- **`@mostrajs/cms`** - `defineConfig`, `validateConfig`, the config types, the media providers (`FileMediaProvider`, `AbstractCmsMediaProvider`), the rich text features, and the document events
+- **`@mostrajs/cms`** - `defineConfig`, `translationKey`, `validateConfig`, the config types, the media providers (`FileMediaProvider`, `AbstractCmsMediaProvider`), the rich text features, and the document events
 - **`@mostrajs/cms/workflows`** - the plugin's workflows and steps, for your own routes and subscribers
 - **`@mostrajs/cms/admin-extensions`** - `defineCmsFieldComponent`, `defineCmsOptionsHook`, `useDocumentValue`, and `useBlockPlace`, with their types, for your Admin
 - **`@mostrajs/cms/shared`** - code that runs on the server and in a browser, such as `sanitizeUrl`, `normalizeSlug`, and the rich text helpers
