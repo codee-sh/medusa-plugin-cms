@@ -1,5 +1,6 @@
 export * from "./document-events"
 export * from "./config/define-config"
+export { translationKey } from "./config/translation-key"
 export { normalizeSlug } from "../shared/slug/normalize-slug"
 export { AbstractCmsMediaProvider } from "./media-provider/abstract-media-provider"
 export { FileMediaProvider } from "./media-provider/file-media-provider"
