@@ -1,3 +1,4 @@
+import { clx } from "@medusajs/ui"
 import { useContext, useMemo } from "react"
 import { getCmsBlockPlaceContext } from "../../../../admin-extensions/registry"
 import type { RegistryArea } from "../../../../lib/area/types"
@@ -63,11 +64,15 @@ export const BlockContent = ({
           field={buildFieldConfig(field)}
         />
       ))}
-      {sections.map((section) => (
+      {sections.map((section, sectionIndex) => (
         <div
           key={section.label}
-          // A section that opens the card sits under the card's own line, so it draws none.
-          className="flex flex-col gap-y-4 border-t pt-4 first:border-t-0 first:pt-0"
+          // A section that opens the card sits under the card's own line, so it draws none. Counted
+          // here, as the dashboard's styles hold no `first:border-t-0`.
+          className={clx(
+            "flex flex-col gap-y-4",
+            (unsectioned.length > 0 || sectionIndex > 0) && "border-t pt-4"
+          )}
         >
           <LayoutHeading
             label={section.label}
@@ -96,10 +101,13 @@ export const BlockContent = ({
           />
         </div>
       ))}
-      {blockAreas.map((blockArea) => (
+      {blockAreas.map((blockArea, areaIndex) => (
         <div
           key={blockArea.name}
-          className="border-t pt-4 first:border-t-0 first:pt-0"
+          className={clx(
+            (unsectioned.length > 0 || sections.length > 0 || areaIndex > 0) &&
+              "border-t pt-4"
+          )}
         >
           <AreaBlocks
             area={blockArea}

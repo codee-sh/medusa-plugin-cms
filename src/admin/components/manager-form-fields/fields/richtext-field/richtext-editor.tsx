@@ -8,6 +8,7 @@ import { isRichTextEmpty } from "../../../../../shared/rich-text/is-rich-text-em
 import { DEFAULT_RICH_TEXT_FEATURES } from "../../../../../shared/rich-text/features/default-rich-text-features"
 import type { RichTextDocument } from "../../../../../shared/rich-text/types"
 import type { ManagerFormInputProps } from "../types"
+import { EDITOR_MIN_HEIGHT } from "./editor-min-height"
 import { buildFieldEditorExtension } from "./editor/extensions/build-field-editor-extension"
 import { Toolbar } from "./editor/toolbar/toolbar"
 import { TOOLBAR_CONTROLS } from "./editor/toolbar/toolbar-controls"
@@ -64,7 +65,9 @@ const RichTextEditor = ({
         <ContentEditable
           {...control}
           onBlur={field.onBlur}
-          className="txt-small text-ui-fg-base min-h-[96px] px-3 py-2 outline-none"
+          className="txt-small text-ui-fg-base px-3 py-2 outline-none"
+          // Inline, as the dashboard's styles hold no class of this height.
+          style={{ minHeight: EDITOR_MIN_HEIGHT }}
         />
         <OnChangePlugin ignoreSelectionChange onChange={onChange} />
       </div>
