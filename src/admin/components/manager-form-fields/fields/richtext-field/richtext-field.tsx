@@ -2,6 +2,7 @@ import { Text } from "@medusajs/ui"
 import { lazy, Suspense } from "react"
 import { useManagerFormFieldsTranslation } from "../../hooks/use-manager-form-fields-translation"
 import type { ManagerFormInputProps } from "../types"
+import { EDITOR_MIN_HEIGHT } from "./editor-min-height"
 
 // The only way into Lexical: the editor and Lexical load as their own chunk when a field first shows.
 const RichTextEditor = lazy(() => import("./richtext-editor"))
@@ -13,7 +14,10 @@ const EditorPlaceholder = () => {
   const { t } = useManagerFormFieldsTranslation()
 
   return (
-    <div className="bg-ui-bg-field shadow-borders-base flex min-h-[96px] items-start rounded-md px-3 py-2">
+    <div
+      className="bg-ui-bg-field shadow-borders-base flex items-start rounded-md px-3 py-2"
+      style={{ minHeight: EDITOR_MIN_HEIGHT }}
+    >
       <Text size="small" leading="compact" className="text-ui-fg-muted">
         {t("richText.loading")}
       </Text>

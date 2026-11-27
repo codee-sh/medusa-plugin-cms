@@ -25,6 +25,7 @@ durable rule.
 - [A unit-tested Admin helper imports the toolkit by file](lessons/a-unit-tested-admin-helper-imports-the-toolkit-by-file.md) - module:cms; area:admin,testing; topic:testing,tooling
 - [An augmentation of admin-shared needs an import of it](lessons/an-augmentation-of-admin-shared-needs-an-import-of-it.md) - module:cms; area:admin; topic:typescript
 - [DataTable rowHref gets the table row, not the data](lessons/datatable-rowhref-gets-the-table-row-not-the-data.md) - area:admin; topic:typescript
+- [The Admin styles no class only the plugin uses](lessons/the-admin-styles-no-class-only-the-plugin-uses.md) - module:cms; area:admin; topic:ui, tooling
 - [useFormContext renders its component on every form state change](lessons/useformcontext-renders-its-component-on-every-form-state-change.md) - module:cms; area:admin; topic:ui
 
 ## backend

@@ -32,7 +32,8 @@ export const HistoryButtons = ({ disabled }: ToolbarControlProps) => {
         disabled={disabled || !canRedo}
         onClick={() => editor.dispatchCommand(REDO_COMMAND, undefined)}
       >
-        <ArrowUturnLeft className="-scale-x-100" />
+        {/* Mirrored inline: the dashboard's styles hold no `-scale-x-100`, and Medusa has no redo icon. */}
+        <ArrowUturnLeft style={{ transform: "scaleX(-1)" }} />
       </ToolbarButton>
     </>
   )

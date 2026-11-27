@@ -92,6 +92,10 @@ rules are in [CODE_REVIEW.md](CODE_REVIEW.md).
   `useCmsTranslation`, and `src/admin/components/manager-form-fields/i18n/json/` for the form toolkit and
   media, read through `useManagerFormFieldsTranslation`; a count gets every Polish plural form. The
   translations' unit test fails on a key one language lacks.
+- **MUST use in the Admin only Tailwind classes the dashboard or `@medusajs/ui` already use.** A project's
+  Admin never scans the plugin's built bundle, so a class only the plugin uses is never generated, and
+  `yarn dev` hides it. Why and what to use instead:
+  [the-admin-styles-no-class-only-the-plugin-uses](.ai/lessons/the-admin-styles-no-class-only-the-plugin-uses.md).
 - **MUST let the user's `yarn dev` carry a change to a linked project.** Do not run `yarn build` while it
   runs: a build cuts the link `yarn dev` makes to the Admin source until `yarn dev` starts again. To
   refresh the declarations the project typechecks against, run
