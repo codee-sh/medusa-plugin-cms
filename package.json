@@ -1,7 +1,7 @@
 {
   "name": "@mostrajs/cms",
   "version": "0.1.1",
-  "description": "CMS for Medusa v2: model content as Medusa data models, edit it in Medusa Admin with drafts, versions and blocks, and serve it through the store API.",
+  "description": "A CMS inside your Medusa v2 project: content as data models, edited in the Admin, served by the Store API.",
   "author": "Codee",
   "license": "MIT",
   "files": [
