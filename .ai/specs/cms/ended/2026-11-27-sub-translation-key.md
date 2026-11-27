@@ -3,7 +3,7 @@
 **Date:** 2026-11-27
 **Status:** done
 **Area:** backend
-**Related:** [main-spec](./2026-11-04-main-spec.md)
+**Related:** [main-spec](../2026-11-04-main-spec.md)
 
 ## TLDR
 
